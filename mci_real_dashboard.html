@@ -1,0 +1,2583 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>داشبورد سرویس‌های دیجیتال همراه اول</title>
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Vazirmatn', sans-serif;
+        }
+
+        :root {
+            --primary: #0a0e1a;
+            --secondary: #1a1a2e;
+            --accent: #6366f1;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --info: #3b82f6;
+            --text: #e4e4e4;
+            --border: #2a3a5a;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--primary) 0%, #0f1421 100%);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 0;
+            margin: 0;
+        }
+
+        .main-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            padding: 40px;
+            border-radius: 24px;
+            margin-bottom: 40px;
+            box-shadow: 0 20px 60px rgba(59, 130, 246, 0.3);
+            border: 2px solid rgba(147, 197, 253, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: pulse 15s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(-10%, -10%) scale(1.1); }
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #fff 0%, #e0f2fe 50%, #bae6fd 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 2px 20px rgba(255, 255, 255, 0.3);
+            position: relative;
+            z-index: 1;
+        }
+
+        .header-subtitle {
+            color: #e0f2fe;
+            font-size: 1.3rem;
+            margin-bottom: 25px;
+            font-weight: 500;
+            position: relative;
+            z-index: 1;
+        }
+
+        .operator-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            color: #000;
+            padding: 16px 32px;
+            border-radius: 16px;
+            font-weight: 700;
+            font-size: 1.2rem;
+            box-shadow: 0 10px 30px rgba(251, 191, 36, 0.4);
+            position: relative;
+            z-index: 1;
+            transition: all 0.3s;
+        }
+
+        .operator-badge:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(251, 191, 36, 0.6);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            border: 2px solid rgba(99, 102, 241, 0.2);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), transparent);
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 60px rgba(99, 102, 241, 0.3);
+            border-color: rgba(99, 102, 241, 0.5);
+        }
+
+        .stat-card:hover::before {
+            opacity: 1;
+        }
+
+        .stat-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            filter: drop-shadow(0 4px 10px rgba(99, 102, 241, 0.3));
+        }
+
+        .stat-label {
+            color: #cbd5e1;
+            font-size: 1rem;
+            margin-bottom: 12px;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #818cf8, #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 12px;
+            line-height: 1.2;
+        }
+
+        .stat-change {
+            font-size: 0.95rem;
+            padding: 6px 12px;
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-weight: 600;
+        }
+
+        .stat-change.positive {
+            background: rgba(16, 185, 129, 0.15);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .stat-change.negative {
+            background: rgba(239, 68, 68, 0.15);
+            color: #f87171;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .tabs {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+            background: rgba(30, 41, 59, 0.5);
+            padding: 12px;
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+        }
+
+        .tab-btn {
+            background: transparent;
+            color: #cbd5e1;
+            border: 2px solid transparent;
+            padding: 14px 32px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        .tab-btn::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 12px;
+            padding: 2px;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .tab-btn:hover {
+            color: #fff;
+            transform: translateY(-2px);
+        }
+
+        .tab-btn:hover::before {
+            opacity: 1;
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: #fff;
+            border-color: transparent;
+            box-shadow: 0 8px 24px rgba(99, 102, 241, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .badge {
+            padding: 8px 16px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            border: 2px solid;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .badge.subscription {
+            background: rgba(139, 92, 246, 0.15);
+            color: #c084fc;
+            border-color: rgba(139, 92, 246, 0.3);
+        }
+
+        .badge.ondemand {
+            background: rgba(236, 72, 153, 0.15);
+            color: #f472b6;
+            border-color: rgba(236, 72, 153, 0.3);
+        }
+
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .chart-container {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            padding: 30px;
+            border-radius: 24px;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.3);
+            border: 2px solid rgba(99, 102, 241, 0.2);
+            transition: all 0.3s;
+            height: 100%;
+        }
+
+        .chart-container.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .chart-container:hover {
+            box-shadow: 0 20px 60px rgba(99, 102, 241, 0.2);
+            border-color: rgba(99, 102, 241, 0.4);
+        }
+
+        .chart-container h2 {
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #fff, #a5b4fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .chart-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .chart-tab {
+            padding: 10px 20px;
+            background: rgba(30, 41, 59, 0.5);
+            border: 2px solid rgba(99, 102, 241, 0.2);
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s;
+            color: #cbd5e1;
+        }
+
+        .chart-tab:hover {
+            background: rgba(99, 102, 241, 0.2);
+            border-color: rgba(99, 102, 241, 0.5);
+            color: #fff;
+            transform: translateY(-2px);
+        }
+
+        .chart-tab.active {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            border-color: transparent;
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+        }
+
+        .table-container {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            padding: 35px;
+            border-radius: 24px;
+            margin-bottom: 40px;
+            overflow-x: auto;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.3);
+            border: 2px solid rgba(99, 102, 241, 0.2);
+            transition: all 0.3s;
+        }
+
+        .table-container:hover {
+            box-shadow: 0 20px 60px rgba(99, 102, 241, 0.2);
+            border-color: rgba(99, 102, 241, 0.4);
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .table-header h2 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #fff, #a5b4fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            font-size: 1rem;
+        }
+
+        thead {
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+        }
+
+        th, td {
+            padding: 18px 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(99, 102, 241, 0.1);
+        }
+
+        th {
+            font-weight: 700;
+            color: #fff;
+            font-size: 1.05rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        thead th:first-child {
+            border-top-right-radius: 12px;
+        }
+
+        thead th:last-child {
+            border-top-left-radius: 12px;
+        }
+
+        tbody tr {
+            transition: all 0.3s;
+            background: rgba(30, 41, 59, 0.3);
+        }
+
+        tbody tr:hover {
+            background: rgba(99, 102, 241, 0.15);
+            transform: scale(1.01);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+        }
+
+        tbody tr:last-child td:first-child {
+            border-bottom-right-radius: 12px;
+        }
+
+        tbody tr:last-child td:last-child {
+            border-bottom-left-radius: 12px;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .comparison-card {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            border: 2px solid rgba(99, 102, 241, 0.2);
+            transition: all 0.3s;
+        }
+
+        .comparison-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 50px rgba(99, 102, 241, 0.3);
+            border-color: rgba(99, 102, 241, 0.5);
+        }
+
+        .comparison-title {
+            font-size: 1.6rem;
+            font-weight: 800;
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid rgba(99, 102, 241, 0.3);
+            background: linear-gradient(135deg, #fff, #a5b4fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .comparison-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .comparison-stat {
+            background: rgba(30, 41, 59, 0.6);
+            padding: 20px;
+            border-radius: 14px;
+            border: 2px solid rgba(99, 102, 241, 0.15);
+            transition: all 0.3s;
+        }
+
+        .comparison-stat:hover {
+            background: rgba(99, 102, 241, 0.1);
+            border-color: rgba(99, 102, 241, 0.4);
+            transform: scale(1.05);
+        }
+
+        .comparison-stat-label {
+            color: #cbd5e1;
+            font-size: 0.95rem;
+            margin-bottom: 8px;
+            display: block;
+            font-weight: 500;
+        }
+
+        .comparison-stat-value {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #818cf8, #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .loading {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--secondary);
+            padding: 40px 60px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            display: none;
+            z-index: 1000;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        select {
+            padding: 12px 20px;
+            border-radius: 12px;
+            background: rgba(30, 41, 59, 0.8);
+            color: #fff;
+            border: 2px solid rgba(99, 102, 241, 0.3);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Vazirmatn', sans-serif;
+        }
+
+        select:hover {
+            border-color: rgba(99, 102, 241, 0.6);
+            background: rgba(30, 41, 59, 1);
+        }
+
+        select:focus {
+            outline: none;
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+
+        .time-filter-container {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            padding: 30px;
+            border-radius: 20px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            border: 2px solid rgba(99, 102, 241, 0.2);
+        }
+
+        .time-filter-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .time-filter-header h2 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #fff, #a5b4fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 0;
+        }
+
+        .time-type-buttons {
+            display: flex;
+            gap: 10px;
+            background: rgba(30, 41, 59, 0.5);
+            padding: 8px;
+            border-radius: 14px;
+            border: 1px solid rgba(99, 102, 241, 0.2);
+        }
+
+        .time-type-btn {
+            padding: 10px 24px;
+            background: transparent;
+            border: none;
+            border-radius: 10px;
+            color: #cbd5e1;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Vazirmatn', sans-serif;
+            font-size: 1rem;
+        }
+
+        .time-type-btn:hover {
+            background: rgba(99, 102, 241, 0.2);
+            color: #fff;
+        }
+
+        .time-type-btn.active {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+        }
+
+        .date-picker-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .date-input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .date-input-group label {
+            color: #cbd5e1;
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+
+        .date-input {
+            padding: 12px 16px;
+            background: rgba(30, 41, 59, 0.8);
+            border: 2px solid rgba(99, 102, 241, 0.3);
+            border-radius: 12px;
+            color: #fff;
+            font-family: 'Vazirmatn', sans-serif;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .date-input:focus {
+            outline: none;
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+
+        .quick-date-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .quick-date-btn {
+            padding: 8px 16px;
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            border-radius: 10px;
+            color: #818cf8;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Vazirmatn', sans-serif;
+            font-size: 0.9rem;
+        }
+
+        .quick-date-btn:hover {
+            background: rgba(99, 102, 241, 0.2);
+            border-color: rgba(99, 102, 241, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .current-period-display {
+            background: rgba(99, 102, 241, 0.15);
+            padding: 15px 20px;
+            border-radius: 12px;
+            border: 2px solid rgba(99, 102, 241, 0.3);
+            color: #a5b4fc;
+            font-size: 1rem;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .info-note {
+            margin-top: 12px;
+            padding: 12px 14px;
+            border-radius: 12px;
+            border: 1px solid rgba(52, 211, 153, 0.25);
+            background: rgba(16, 185, 129, 0.08);
+            color: #c7f9e9;
+            font-size: 0.95rem;
+            line-height: 1.9;
+        }
+
+        .info-note em {
+            font-style: normal;
+            color: #a7f3d0;
+            font-weight: 700;
+        }
+
+        @media (max-width: 1200px) {
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .tabs {
+                padding: 8px;
+            }
+
+            .tab-btn {
+                padding: 10px 20px;
+                font-size: 0.95rem;
+            }
+
+            .chart-container,
+            .table-container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+    <div class="header">
+        <h1>📊 داشبورد سرویس‌های دیجیتال</h1>
+        <p class="header-subtitle">گزارش جامع عملکرد سرویس‌های اشتراکی و رویدادی</p>
+        <div class="operator-badge">
+            📱 همراه اول | 
+        </div>
+    </div>
+
+    <div class="time-filter-container">
+        <div class="time-filter-header">
+            <h2>📅 انتخاب بازه زمانی (تقویم شمسی)</h2>
+            <div class="time-type-buttons">
+                <button class="time-type-btn" onclick="switchTimeType('daily')">📆 روزانه</button>
+                <button class="time-type-btn active" onclick="switchTimeType('monthly')">📊 ماهانه</button>
+                <button class="time-type-btn" onclick="switchTimeType('yearly')">📈 سالانه</button>
+            </div>
+        </div>
+
+        <div class="date-picker-container" id="datePickerContainer">
+            <div class="date-input-group">
+                <label>از تاریخ:</label>
+                <input type="text" class="date-input" id="startDateInput" placeholder="1402/01/01" />
+            </div>
+            <div class="date-input-group">
+                <label>تا تاریخ:</label>
+                <input type="text" class="date-input" id="endDateInput" placeholder="1402/12/29" />
+            </div>
+            <div class="date-input-group">
+                <label>&nbsp;</label>
+                <button class="time-type-btn active" onclick="applyDateFilter()" style="width: 100%; padding: 12px;">🔍 اعمال فیلتر</button>
+            </div>
+        </div>
+
+        <div class="quick-date-buttons">
+            <button class="quick-date-btn" onclick="setQuickDate('today')">امروز</button>
+            <button class="quick-date-btn" onclick="setQuickDate('yesterday')">دیروز</button>
+            <button class="quick-date-btn" onclick="setQuickDate('last7days')">7 روز اخیر</button>
+            <button class="quick-date-btn" onclick="setQuickDate('last30days')">30 روز اخیر</button>
+            <button class="quick-date-btn" onclick="setQuickDate('thisMonth')">این ماه</button>
+            <button class="quick-date-btn" onclick="setQuickDate('lastMonth')">ماه گذشته</button>
+            <button class="quick-date-btn" onclick="setQuickDate('last3months')">3 ماه اخیر</button>
+            <button class="quick-date-btn" onclick="setQuickDate('last6months')">6 ماه اخیر</button>
+            <button class="quick-date-btn" onclick="setQuickDate('thisYear')">امسال</button>
+            <button class="quick-date-btn" onclick="setQuickDate('lastYear')">سال گذشته</button>
+        </div>
+
+        <div class="current-period-display" id="currentPeriodDisplay">
+            📊 نمایش داده‌های: سال 1402 (ماهانه)
+        </div>
+
+        <div class="info-note">
+            <strong>ℹ️ نکته درباره سرویس‌های اشتراکی:</strong>
+            شارژ/تمدید یعنی <em>کسر مبلغ دوره از اعتبار مشترکین اعتباری</em> یا <em>اضافه شدن مبلغ به قبض مشترکین دائمی</em>.
+        </div>
+    </div>
+
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchServiceType('all')">همه سرویس‌ها</button>
+        <button class="tab-btn" onclick="switchServiceType('subscription')">🔄 اشتراکی</button>
+        <button class="tab-btn" onclick="switchServiceType('ondemand')">⚡ رویدادی</button>
+    </div>
+
+    <div class="stats-grid" id="statsGrid"></div>
+
+    <div class="comparison-grid" id="comparisonGrid"></div>
+
+    <div class="charts-grid">
+        <div class="chart-container">
+            <h2>📈 نمودار درآمد سرویس‌ها (میلیارد تومان)</h2>
+            <div class="chart-tabs">
+                <button class="chart-tab active" onclick="switchRevenueView('all')">همه</button>
+                <button class="chart-tab" onclick="switchRevenueView('subscription')">اشتراکی</button>
+                <button class="chart-tab" onclick="switchRevenueView('ondemand')">رویدادی</button>
+            </div>
+            <canvas id="revenueChart"></canvas>
+        </div>
+
+        <div class="chart-container">
+            <h2>👥 نمودار کاربران / خریدها</h2>
+            <div class="chart-tabs">
+                <button class="chart-tab active" onclick="switchUsersView('all')">همه</button>
+                <button class="chart-tab" onclick="switchUsersView('subscription')">اشتراکی</button>
+                <button class="chart-tab" onclick="switchUsersView('ondemand')">رویدادی</button>
+            </div>
+            <canvas id="usersChart"></canvas>
+        </div>
+
+        <div class="chart-container">
+            <h2>🥧 سهم درآمد هر سرویس</h2>
+            <canvas id="revenuePieChart"></canvas>
+        </div>
+
+        <div class="chart-container">
+            <h2>📉 نرخ ریزش و نرخ ماندگاری (سرویس‌های اشتراکی)</h2>
+            <div class="chart-tabs">
+                <button class="chart-tab active" onclick="switchChurnView('churn')">نرخ ریزش</button>
+                <button class="chart-tab" onclick="switchChurnView('retention')">نرخ ماندگاری</button>
+                <button class="chart-tab" onclick="switchChurnView('both')">هر دو</button>
+            </div>
+            <canvas id="churnChart"></canvas>
+        </div>
+
+        <div class="chart-container">
+            <h2>🔄 نرخ بازگشت کاربران (سرویس‌های اشتراکی)</h2>
+            <div style="background: rgba(52, 211, 153, 0.1); padding: 15px; border-radius: 12px; margin-bottom: 15px; border: 2px solid rgba(52, 211, 153, 0.3);">
+                <p style="color: #34d399; font-size: 0.95rem; margin: 0;">
+                    💡 <strong>نرخ بازگشت:</strong> درصد کاربرانی که پس از ریزش (ترک سرویس)، مجدداً به سرویس برگشته‌اند
+                </p>
+            </div>
+            <canvas id="winBackChart"></canvas>
+        </div>
+    </div>
+
+    <div class="table-container">
+        <h2>📋 جدول کامل سرویس‌ها</h2>
+        <table id="servicesTable">
+            <!-- Table is populated by JavaScript -->
+        </table>
+    </div>
+
+    <div class="table-container">
+        <div class="table-header">
+            <h2>📅 گزارش ماهانه تفصیلی هر سرویس</h2>
+            <select id="monthlyServiceSelector" onchange="updateMonthlyTable()" style="padding: 10px; border-radius: 8px; background: var(--secondary); color: var(--text); border: 1px solid var(--border);">
+                <option value="A">سرویس A - استریم موسیقی</option>
+                <option value="B">سرویس B - پلتفرم ویدیو</option>
+                <option value="C">سرویس C - بلیت سینما و تئاتر</option>
+                <option value="D">سرویس D - کلاب گیمینگ</option>
+                <option value="E">سرویس E - کتاب و مجله دیجیتال</option>
+                <option value="F">سرویس F - طرح ترافیک و پارکومتر</option>
+                <option value="G">سرویس G - آکادمی آنلاین</option>
+                <option value="H">سرویس H - بیمه دیجیتال (IBIME)</option>
+            </select>
+        </div>
+        <table id="monthlyDetailsTable">
+            <thead>
+                <tr>
+                    <th>ماه</th>
+                    <th>درآمد (میلیون تومان)</th>
+                    <th>کاربران / خریدها</th>
+                    <th>کاربران فعال</th>
+                    <th>نرخ ریزش (%)</th>
+                    <th>نرخ ماندگاری (%)</th>
+                    <th>نرخ بازگشت (%)</th>
+                    <th>تیکت‌ها</th>
+                </tr>
+            </thead>
+            <tbody id="monthlyDetailsBody"></tbody>
+        </table>
+    </div>
+
+    <div class="table-container">
+        <div class="table-header">
+            <h2>💵 جدول قیمت‌ها و تعرفه‌ها</h2>
+            <select id="pricingServiceSelector" onchange="updatePricingTable()" style="padding: 10px; border-radius: 8px; background: var(--secondary); color: var(--text); border: 1px solid var(--border);">
+                <option value="A">سرویس A - استریم موسیقی</option>
+                <option value="B">سرویس B - پلتفرم ویدیو</option>
+                <option value="C">سرویس C - بلیت سینما و تئاتر</option>
+                <option value="D">سرویس D - کلاب گیمینگ</option>
+                <option value="E">سرویس E - کتاب و مجله دیجیتال</option>
+                <option value="F">سرویس F - طرح ترافیک و پارکومتر</option>
+                <option value="G">سرویس G - آکادمی آنلاین</option>
+                <option value="H">سرویس H - بیمه دیجیتال (IBIME)</option>
+            </select>
+        </div>
+        <table id="pricingTable">
+            <thead>
+                <tr>
+                    <th>نام تعرفه</th>
+                    <th>قیمت (تومان)</th>
+                    <th>تعداد</th>
+                    <th>درآمد (میلیون تومان)</th>
+                    <th>سهم</th>
+                </tr>
+            </thead>
+            <tbody id="pricingBody"></tbody>
+        </table>
+    </div>
+
+    <div class="loading" id="loading">
+        <h2>⏳ در حال بارگذاری...</h2>
+    </div>
+    </div>
+
+    <script>
+        // اپراتور همراه اول: 80 میلیون مشترک، 15 میلیون کاربر فعال سرویس‌های دیجیتال
+        const servicesData = {
+            'A': {
+                name: 'استریم موسیقی',
+                type: 'subscription',
+                description: 'پخش آنلاین موسیقی و پادکست',
+                totalUsers: 2850000, // 2.85 میلیون
+                activeUsers: 2450000,
+                revenue: 185000, // میلیون تومان
+                tax: 27750,
+                cost: 82000,
+                profit: 75250,
+                churnRate: 5.8,
+                retentionRate: 94.2,
+                winBackRate: 18.5,
+                pricingTiers: [
+                    { name: 'پایه', price: 5000, users: 980000 },
+                    { name: 'نقره‌ای', price: 8000, users: 820000 },
+                    { name: 'طلایی', price: 12000, users: 620000 },
+                    { name: 'پلاتینیوم', price: 18000, users: 285000 },
+                    { name: 'الماس', price: 22000, users: 115000 },
+                    { name: 'VIP', price: 25000, users: 30000 }
+                ],
+                monthlyRevenue: [14200, 15100, 15800, 16200, 15400, 15900, 16800, 15600, 15200, 16000, 16500, 16500],
+                monthlyUsers: [2720000, 2760000, 2800000, 2820000, 2810000, 2830000, 2870000, 2860000, 2840000, 2865000, 2880000, 2850000],
+                monthlyActiveUsers: [2350000, 2380000, 2410000, 2430000, 2420000, 2440000, 2475000, 2465000, 2445000, 2468000, 2485000, 2450000],
+                monthlyChurn: [6.2, 6.0, 5.8, 5.5, 5.7, 5.4, 5.2, 5.6, 5.9, 5.5, 5.4, 5.8],
+                monthlyRetention: [93.8, 94.0, 94.2, 94.5, 94.3, 94.6, 94.8, 94.4, 94.1, 94.5, 94.6, 94.2],
+                monthlyWinBack: [17.2, 18.5, 19.1, 18.8, 17.9, 18.3, 19.5, 18.7, 17.6, 18.9, 19.2, 18.5],
+                dailyData: generateDailyData(2850000, 185000, 12),
+                yearlyData: [
+                    { year: 1400, users: 2100000, revenue: 142000, churn: 6.8, retention: 93.2, winBack: 16.2 },
+                    { year: 1401, users: 2450000, revenue: 165000, churn: 6.2, retention: 93.8, winBack: 17.1 },
+                    { year: 1402, users: 2850000, revenue: 185000, churn: 5.8, retention: 94.2, winBack: 18.5 }
+                ]
+            },
+            'B': {
+                name: 'پلتفرم ویدیو',
+                type: 'subscription',
+                description: 'سریال، فیلم و محتوای ویدیویی',
+                totalUsers: 1980000, // 1.98 میلیون
+                activeUsers: 1750000,
+                revenue: 278000, // میلیون تومان
+                tax: 41700,
+                cost: 128000,
+                profit: 108300,
+                churnRate: 7.2,
+                retentionRate: 92.8,
+                winBackRate: 22.3,
+                pricingTiers: [
+                    { name: 'پایه SD', price: 7000, users: 680000 },
+                    { name: 'استاندارد HD', price: 12000, users: 590000 },
+                    { name: 'پریمیوم FHD', price: 16000, users: 410000 },
+                    { name: 'فوق‌پریمیوم 4K', price: 20000, users: 205000 },
+                    { name: 'خانوادگی', price: 24000, users: 75000 },
+                    { name: 'کسب‌وکار', price: 25000, users: 20000 }
+                ],
+                monthlyRevenue: [21500, 22800, 23600, 24500, 23200, 24100, 25200, 23900, 22700, 23800, 24600, 23100],
+                monthlyUsers: [1890000, 1920000, 1945000, 1965000, 1950000, 1970000, 2010000, 1995000, 1975000, 1990000, 2015000, 1980000],
+                monthlyActiveUsers: [1680000, 1710000, 1730000, 1750000, 1735000, 1755000, 1790000, 1775000, 1755000, 1772000, 1795000, 1750000],
+                monthlyChurn: [7.8, 7.5, 7.3, 7.0, 7.2, 6.9, 6.7, 7.1, 7.3, 7.0, 6.8, 7.2],
+                monthlyRetention: [92.2, 92.5, 92.7, 93.0, 92.8, 93.1, 93.3, 92.9, 92.7, 93.0, 93.2, 92.8],
+                monthlyWinBack: [20.8, 21.5, 22.8, 23.1, 21.9, 22.6, 23.5, 22.2, 21.3, 22.9, 23.2, 22.3],
+                dailyData: generateDailyData(1980000, 278000, 12),
+                yearlyData: [
+                    { year: 1400, users: 1450000, revenue: 215000, churn: 8.2, retention: 91.8, winBack: 20.1 },
+                    { year: 1401, users: 1680000, revenue: 248000, churn: 7.6, retention: 92.4, winBack: 21.3 },
+                    { year: 1402, users: 1980000, revenue: 278000, churn: 7.2, retention: 92.8, winBack: 22.3 }
+                ]
+            },
+            'C': {
+                name: 'بلیت سینما و تئاتر',
+                type: 'ondemand',
+                description: 'خرید آنلاین بلیت فیلم و تئاتر (یکبار مصرف)',
+                totalPurchases: 5820000, // 5.82 میلیون خرید در سال
+                uniqueUsers: 3200000, // 3.2 میلیون کاربر یکتا
+                revenue: 395000, // میلیون تومان
+                tax: 59250,
+                cost: 186000,
+                profit: 149750,
+                tickets: 8420,
+                churnRate: 0,
+                retentionRate: 0,
+                winBackRate: 0,
+                repeatPurchaseRate: 62.5,
+                pricingTiers: [
+                    { name: 'سینما عادی', price: 35000, purchases: 2010000 },
+                    { name: 'سینما VIP', price: 55000, purchases: 1385000 },
+                    { name: 'تئاتر برنز', price: 45000, purchases: 860000 },
+                    { name: 'تئاتر نقره', price: 70000, purchases: 795000 },
+                    { name: 'تئاتر طلا', price: 95000, purchases: 495000 },
+                    { name: 'رویداد ویژه', price: 110000, purchases: 275000 }
+                ],
+                monthlyRevenue: [29500, 33200, 34800, 36500, 31200, 28900, 39800, 36200, 32400, 34100, 37200, 41200],
+                monthlyPurchases: [445000, 502000, 526000, 552000, 472000, 437000, 602000, 548000, 490000, 516000, 563000, 623000],
+                monthlyUniqueUsers: [380000, 417000, 435000, 458000, 391000, 362000, 499000, 454000, 406000, 428000, 466000, 516000],
+                monthlyTickets: [645, 752, 698, 612, 825, 782, 558, 672, 745, 682, 715, 734],
+                dailyData: generateDailyData(5820000, 395000, 12, true),
+                yearlyData: [
+                    { year: 1400, purchases: 4280000, uniqueUsers: 2350000, revenue: 305000, tickets: 6250 },
+                    { year: 1401, purchases: 5010000, uniqueUsers: 2760000, revenue: 352000, tickets: 7380 },
+                    { year: 1402, purchases: 5820000, uniqueUsers: 3200000, revenue: 395000, tickets: 8420 }
+                ]
+            },
+            'D': {
+                name: 'کلاب گیمینگ',
+                type: 'subscription',
+                description: 'دسترسی نامحدود به بازی‌های آنلاین',
+                totalUsers: 1560000, // 1.56 میلیون
+                activeUsers: 1385000,
+                revenue: 215000, // میلیون تومان
+                tax: 32250,
+                cost: 98000,
+                profit: 84750,
+                churnRate: 8.2,
+                retentionRate: 91.8,
+                winBackRate: 15.8,
+                pricingTiers: [
+                    { name: 'بازی موبایل', price: 8000, users: 590000 },
+                    { name: 'استاندارد', price: 13000, users: 445000 },
+                    { name: 'گیمر حرفه‌ای', price: 18000, users: 315000 },
+                    { name: 'پریمیوم', price: 22000, users: 158000 },
+                    { name: 'آلتیمیت', price: 24000, users: 45000 },
+                    { name: 'E-Sport', price: 25000, users: 7000 }
+                ],
+                monthlyRevenue: [16800, 17900, 18500, 19200, 18200, 18900, 19800, 18600, 17800, 18700, 19500, 19100],
+                monthlyUsers: [1485000, 1510000, 1535000, 1550000, 1540000, 1560000, 1585000, 1570000, 1550000, 1568000, 1590000, 1560000],
+                monthlyActiveUsers: [1320000, 1345000, 1365000, 1380000, 1370000, 1390000, 1410000, 1398000, 1380000, 1396000, 1415000, 1385000],
+                monthlyChurn: [8.8, 8.5, 8.3, 8.0, 8.2, 7.9, 7.7, 8.1, 8.3, 8.0, 7.8, 8.2],
+                monthlyRetention: [91.2, 91.5, 91.7, 92.0, 91.8, 92.1, 92.3, 91.9, 91.7, 92.0, 92.2, 91.8],
+                monthlyWinBack: [14.5, 15.2, 16.1, 16.8, 15.5, 15.9, 16.5, 15.7, 14.9, 16.2, 16.7, 15.8],
+                dailyData: generateDailyData(1560000, 215000, 12),
+                yearlyData: [
+                    { year: 1400, users: 1150000, revenue: 165000, churn: 9.2, retention: 90.8, winBack: 14.1 },
+                    { year: 1401, users: 1340000, revenue: 192000, churn: 8.7, retention: 91.3, winBack: 14.9 },
+                    { year: 1402, users: 1560000, revenue: 215000, churn: 8.2, retention: 91.8, winBack: 15.8 }
+                ]
+            },
+            'E': {
+                name: 'کتاب و مجله دیجیتال',
+                type: 'subscription',
+                description: 'کتابخانه دیجیتال و مجلات تخصصی',
+                totalUsers: 1270000, // 1.27 میلیون
+                activeUsers: 1100000,
+                revenue: 128000, // میلیون تومان
+                tax: 19200,
+                cost: 55000,
+                profit: 53800,
+                churnRate: 5.2,
+                retentionRate: 94.8,
+                winBackRate: 24.6,
+                pricingTiers: [
+                    { name: 'پایه', price: 5000, users: 450000 },
+                    { name: 'کتاب‌خوان', price: 9000, users: 385000 },
+                    { name: 'استاندارد', price: 13000, users: 260000 },
+                    { name: 'دانشگاهی', price: 17000, users: 115000 },
+                    { name: 'حرفه‌ای', price: 21000, users: 50000 },
+                    { name: 'سازمانی', price: 25000, users: 10000 }
+                ],
+                monthlyRevenue: [9800, 10400, 10800, 11200, 10600, 11000, 11600, 10900, 10200, 10800, 11400, 10300],
+                monthlyUsers: [1210000, 1230000, 1245000, 1258000, 1250000, 1265000, 1285000, 1275000, 1260000, 1272000, 1290000, 1270000],
+                monthlyActiveUsers: [1050000, 1068000, 1080000, 1092000, 1085000, 1098000, 1115000, 1107000, 1095000, 1105000, 1120000, 1100000],
+                monthlyChurn: [5.8, 5.6, 5.4, 5.1, 5.3, 5.0, 4.8, 5.2, 5.4, 5.1, 4.9, 5.2],
+                monthlyRetention: [94.2, 94.4, 94.6, 94.9, 94.7, 95.0, 95.2, 94.8, 94.6, 94.9, 95.1, 94.8],
+                monthlyWinBack: [23.5, 24.1, 25.2, 25.8, 24.3, 24.9, 26.1, 24.7, 23.8, 25.3, 25.9, 24.6],
+                dailyData: generateDailyData(1270000, 128000, 12),
+                yearlyData: [
+                    { year: 1400, users: 935000, revenue: 99000, churn: 6.2, retention: 93.8, winBack: 22.8 },
+                    { year: 1401, users: 1085000, revenue: 115000, churn: 5.7, retention: 94.3, winBack: 23.7 },
+                    { year: 1402, users: 1270000, revenue: 128000, churn: 5.2, retention: 94.8, winBack: 24.6 }
+                ]
+            },
+            'F': {
+                name: 'طرح ترافیک و پارکومتر',
+                type: 'ondemand',
+                description: 'پرداخت ورود به محدوده ترافیک و پارکومتر (یکبار مصرف)',
+                totalPurchases: 18200000, // 18.2 میلیون پرداخت در سال
+                uniqueUsers: 8400000, // 8.4 میلیون کاربر یکتا
+                revenue: 685000, // میلیون تومان
+                tax: 102750,
+                cost: 312000,
+                profit: 270250,
+                tickets: 11850,
+                churnRate: 0,
+                retentionRate: 0,
+                winBackRate: 0,
+                repeatPurchaseRate: 78.5,
+                pricingTiers: [
+                    { name: 'ورود روزانه', price: 30000, purchases: 6650000 },
+                    { name: 'پارکومتر 2 ساعت', price: 20000, purchases: 5080000 },
+                    { name: 'ورود هفتگی', price: 50000, purchases: 3040000 },
+                    { name: 'پارکومتر روزانه', price: 35000, purchases: 1820000 },
+                    { name: 'ورود ماهانه', price: 75000, purchases: 1150000 },
+                    { name: 'ورود فصلی', price: 95000, purchases: 460000 }
+                ],
+                monthlyRevenue: [52000, 56800, 59500, 62400, 56200, 51800, 68500, 63200, 55900, 58700, 63200, 66800],
+                monthlyPurchases: [1420000, 1550000, 1625000, 1705000, 1535000, 1415000, 1870000, 1728000, 1528000, 1604000, 1726000, 1824000],
+                monthlyUniqueUsers: [655000, 715000, 750000, 787000, 708000, 653000, 863000, 797000, 705000, 740000, 797000, 842000],
+                monthlyTickets: [920, 1050, 985, 895, 1180, 1095, 758, 945, 1025, 942, 998, 1057],
+                dailyData: generateDailyData(18200000, 685000, 12, true),
+                yearlyData: [
+                    { year: 1400, purchases: 13400000, uniqueUsers: 6150000, revenue: 528000, tickets: 8920 },
+                    { year: 1401, purchases: 15650000, uniqueUsers: 7220000, revenue: 608000, tickets: 10250 },
+                    { year: 1402, purchases: 18200000, uniqueUsers: 8400000, revenue: 685000, tickets: 11850 }
+                ]
+            },
+            'G': {
+                name: 'آکادمی آنلاین',
+                type: 'subscription',
+                description: 'آموزش‌های ویدیویی و دوره‌های تخصصی',
+                totalUsers: 2420000, // 2.42 میلیون
+                activeUsers: 2140000,
+                revenue: 342000, // میلیون تومان
+                tax: 51300,
+                cost: 152000,
+                profit: 138700,
+                churnRate: 6.5,
+                retentionRate: 93.5,
+                winBackRate: 20.1,
+                pricingTiers: [
+                    { name: 'دانش‌آموز', price: 6000, users: 792000 },
+                    { name: 'دانشجو', price: 10000, users: 695000 },
+                    { name: 'عمومی', price: 15000, users: 505000 },
+                    { name: 'حرفه‌ای', price: 19000, users: 298000 },
+                    { name: 'سازمانی', price: 23000, users: 106000 },
+                    { name: 'کارپوریت', price: 25000, users: 24000 }
+                ],
+                monthlyRevenue: [27200, 28650, 29600, 30800, 29400, 30200, 31500, 30400, 28900, 29900, 31100, 28050],
+                monthlyUsers: [2360000, 2385000, 2405000, 2425000, 2415000, 2435000, 2460000, 2450000, 2430000, 2445000, 2470000, 2420000],
+                monthlyActiveUsers: [2105000, 2125000, 2142000, 2160000, 2150000, 2168000, 2190000, 2182000, 2165000, 2178000, 2200000, 2140000],
+                monthlyChurn: [7.1, 6.8, 6.6, 6.3, 6.5, 6.2, 6.0, 6.4, 6.6, 6.3, 6.1, 6.5],
+                monthlyRetention: [92.9, 93.2, 93.4, 93.7, 93.5, 93.8, 94.0, 93.6, 93.4, 93.7, 93.9, 93.5],
+                monthlyWinBack: [18.9, 19.5, 20.8, 21.2, 19.8, 20.4, 21.5, 20.1, 19.3, 20.7, 21.3, 20.1],
+                dailyData: generateDailyData(2420000, 342000, 12),
+                yearlyData: [
+                    { year: 1400, users: 1780000, revenue: 264000, churn: 7.5, retention: 92.5, winBack: 18.5 },
+                    { year: 1401, users: 2070000, revenue: 305000, churn: 7.0, retention: 93.0, winBack: 19.3 },
+                    { year: 1402, users: 2420000, revenue: 342000, churn: 6.5, retention: 93.5, winBack: 20.1 }
+                ]
+            },
+            'H': {
+                name: 'بیمه دیجیتال (IBIME)',
+                type: 'subscription',
+                description: 'بیمه آنلاین و خدمات بیمه‌ای',
+                totalUsers: 1850000,
+                activeUsers: 1620000,
+                revenue: 425000,
+                tax: 63750,
+                cost: 198000,
+                profit: 163250,
+                churnRate: 4.8,
+                retentionRate: 95.2,
+                winBackRate: 28.5,
+                pricingTiers: [
+                    { name: 'بیمه پایه', price: 15000, users: 685000 },
+                    { name: 'بیمه نقره‌ای', price: 22000, users: 520000 },
+                    { name: 'بیمه طلایی', price: 35000, users: 385000 },
+                    { name: 'بیمه خانواده', price: 45000, users: 165000 },
+                    { name: 'بیمه تکمیلی', price: 55000, users: 75000 },
+                    { name: 'بیمه VIP', price: 65000, users: 20000 }
+                ],
+                monthlyRevenue: [32500, 34200, 35800, 37200, 35100, 36400, 38500, 36800, 34900, 36700, 38200, 36600],
+                monthlyUsers: [1760000, 1785000, 1805000, 1825000, 1815000, 1835000, 1870000, 1860000, 1840000, 1858000, 1880000, 1850000],
+                monthlyActiveUsers: [1545000, 1568000, 1587000, 1605000, 1595000, 1613000, 1645000, 1636000, 1618000, 1634000, 1654000, 1620000],
+                monthlyChurn: [5.4, 5.1, 4.9, 4.6, 4.8, 4.5, 4.3, 4.7, 4.9, 4.6, 4.4, 4.8],
+                monthlyRetention: [94.6, 94.9, 95.1, 95.4, 95.2, 95.5, 95.7, 95.3, 95.1, 95.4, 95.6, 95.2],
+                monthlyWinBack: [27.2, 28.1, 29.5, 30.2, 28.6, 29.3, 30.8, 29.1, 27.8, 29.6, 30.5, 28.5],
+                dailyData: generateDailyData(1850000, 425000, 12),
+                yearlyData: [
+                    { year: 1400, users: 1350000, revenue: 328000, churn: 5.8, retention: 94.2, winBack: 26.2 },
+                    { year: 1401, users: 1580000, revenue: 378000, churn: 5.3, retention: 94.7, winBack: 27.3 },
+                    { year: 1402, users: 1850000, revenue: 425000, churn: 4.8, retention: 95.2, winBack: 28.5 }
+                ]
+            }
+        };
+
+        const months = ['فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور', 'مهر', 'آبان', 'آذر', 'دی', 'بهمن', 'اسفند'];
+
+        // محدوده داده‌های نمونه فعلاً بر پایه سال 1402 (روزانه/ماهانه) و 1400-1402 (سالانه) است
+        const DATA_MIN_DATE = '1402/01/01';
+        const DATA_MAX_DATE = '1402/12/29';
+        const DATA_MIN_YEAR = 1400;
+        const DATA_MAX_YEAR = 1402;
+
+        function parseJalaliDate(dateStr) {
+            if (!dateStr || typeof dateStr !== 'string') return null;
+            const m = dateStr.trim().match(/^(\d{4})\/(\d{2})\/(\d{2})$/);
+            if (!m) return null;
+            const y = parseInt(m[1], 10);
+            const mo = parseInt(m[2], 10);
+            const d = parseInt(m[3], 10);
+            if (!Number.isFinite(y) || !Number.isFinite(mo) || !Number.isFinite(d)) return null;
+            if (mo < 1 || mo > 12 || d < 1 || d > 31) return null;
+            return { y, m: mo, d };
+        }
+
+        function formatJalaliDate(p) {
+            if (!p) return '';
+            return `${p.y}/${String(p.m).padStart(2, '0')}/${String(p.d).padStart(2, '0')}`;
+        }
+
+        function compareJalali(a, b) {
+            if (a.y !== b.y) return a.y - b.y;
+            if (a.m !== b.m) return a.m - b.m;
+            return a.d - b.d;
+        }
+
+        function clampJalali(dateParts, minStr, maxStr) {
+            const minP = parseJalaliDate(minStr);
+            const maxP = parseJalaliDate(maxStr);
+            if (!dateParts || !minP || !maxP) return dateParts;
+            if (compareJalali(dateParts, minP) < 0) return minP;
+            if (compareJalali(dateParts, maxP) > 0) return maxP;
+            return dateParts;
+        }
+
+        function normalizeDateRange(startStr, endStr) {
+            let s = parseJalaliDate(startStr);
+            let e = parseJalaliDate(endStr);
+            if (!s) s = parseJalaliDate(DATA_MIN_DATE);
+            if (!e) e = parseJalaliDate(DATA_MAX_DATE);
+            if (!s || !e) return { start: startStr, end: endStr };
+            if (compareJalali(s, e) > 0) {
+                const tmp = s;
+                s = e;
+                e = tmp;
+            }
+            return { start: formatJalaliDate(s), end: formatJalaliDate(e) };
+        }
+
+        function getMonthIndexRange(startStr, endStr, clampToYear = 1402) {
+            const norm = normalizeDateRange(startStr, endStr);
+            let s = parseJalaliDate(norm.start);
+            let e = parseJalaliDate(norm.end);
+            if (!s || !e) return { startIdx: 0, endIdx: 11 };
+
+            // داده‌های ماهانه فعلاً فقط برای سال 1402 موجود است؛ بازه را به همان سال clamp می‌کنیم
+            if (s.y < clampToYear) s = { y: clampToYear, m: 1, d: 1 };
+            if (e.y > clampToYear) e = { y: clampToYear, m: 12, d: 29 };
+            s.y = clampToYear;
+            e.y = clampToYear;
+
+            const startIdx = Math.max(0, Math.min(11, (s.m || 1) - 1));
+            const endIdx = Math.max(0, Math.min(11, (e.m || 12) - 1));
+            return {
+                startIdx: Math.min(startIdx, endIdx),
+                endIdx: Math.max(startIdx, endIdx)
+            };
+        }
+
+        function getYearRange(startStr, endStr) {
+            const norm = normalizeDateRange(startStr, endStr);
+            const s = parseJalaliDate(norm.start);
+            const e = parseJalaliDate(norm.end);
+            if (!s || !e) return { startYear: DATA_MIN_YEAR, endYear: DATA_MAX_YEAR };
+            let startYear = Math.max(DATA_MIN_YEAR, Math.min(DATA_MAX_YEAR, s.y));
+            let endYear = Math.max(DATA_MIN_YEAR, Math.min(DATA_MAX_YEAR, e.y));
+            if (startYear > endYear) {
+                const tmp = startYear;
+                startYear = endYear;
+                endYear = tmp;
+            }
+            return { startYear, endYear };
+        }
+
+        function filterDailyDataByRange(dailyData, startStr, endStr) {
+            if (!Array.isArray(dailyData) || dailyData.length === 0) return [];
+            const norm = normalizeDateRange(startStr, endStr);
+            const s = clampJalali(parseJalaliDate(norm.start), DATA_MIN_DATE, DATA_MAX_DATE);
+            const e = clampJalali(parseJalaliDate(norm.end), DATA_MIN_DATE, DATA_MAX_DATE);
+            if (!s || !e) return dailyData.slice();
+            const startKey = `${s.y}${String(s.m).padStart(2, '0')}${String(s.d).padStart(2, '0')}`;
+            const endKey = `${e.y}${String(e.m).padStart(2, '0')}${String(e.d).padStart(2, '0')}`;
+            return dailyData.filter(d => {
+                const p = parseJalaliDate(d.date);
+                if (!p) return false;
+                const key = `${p.y}${String(p.m).padStart(2, '0')}${String(p.d).padStart(2, '0')}`;
+                return key >= startKey && key <= endKey;
+            });
+        }
+
+        function formatDailyLabel(dateStr) {
+            const p = parseJalaliDate(dateStr);
+            if (!p) return dateStr;
+            return `${p.d} ${months[p.m - 1]}`;
+        }
+
+        function sum(arr) {
+            return (arr || []).reduce((a, b) => a + b, 0);
+        }
+
+        function avg(arr) {
+            if (!arr || arr.length === 0) return 0;
+            return sum(arr) / arr.length;
+        }
+
+        function getServicePeriodMetrics(service) {
+            // خروجی برای استفاده در کارت‌ها/جدول‌ها/پای‌چارت
+            const revenueRatioTax = service.revenue ? (service.tax / service.revenue) : 0.15;
+            const revenueRatioProfit = service.revenue ? (service.profit / service.revenue) : 0.35;
+
+            if (currentTimeType === 'daily') {
+                const rows = filterDailyDataByRange(service.dailyData || [], currentStartDate, currentEndDate);
+                const effectiveRows = rows.length > 0 ? rows : (service.dailyData || []).slice(-30);
+                const revenueSum = sum(effectiveRows.map(r => r.revenue || 0));
+                const valueSum = sum(effectiveRows.map(r => r.value || 0));
+                const valueAvg = avg(effectiveRows.map(r => r.value || 0));
+
+                if (service.type === 'subscription') {
+                    return {
+                        users: Math.round(valueSum),
+                        activeUsers: Math.round(valueAvg),
+                        purchases: 0,
+                        uniqueUsers: 0,
+                        revenue: revenueSum,
+                        tax: revenueSum * revenueRatioTax,
+                        profit: revenueSum * revenueRatioProfit,
+                        churn: service.churnRate,
+                        retention: service.retentionRate,
+                        winBack: service.winBackRate
+                    };
+                }
+
+                // ondemand: value = تعداد خرید روزانه
+                const estimatedUnique = Math.round(valueAvg * 0.75);
+                return {
+                    users: estimatedUnique,
+                    activeUsers: estimatedUnique,
+                    purchases: Math.round(valueSum),
+                    uniqueUsers: estimatedUnique,
+                    revenue: revenueSum,
+                    tax: revenueSum * revenueRatioTax,
+                    profit: revenueSum * revenueRatioProfit,
+                    churn: 0,
+                    retention: service.repeatPurchaseRate || 0,
+                    winBack: 0
+                };
+            }
+
+            if (currentTimeType === 'yearly' && Array.isArray(service.yearlyData)) {
+                const { startYear, endYear } = getYearRange(currentStartDate, currentEndDate);
+                const range = service.yearlyData.filter(y => y.year >= startYear && y.year <= endYear);
+                const effective = range.length > 0 ? range : service.yearlyData;
+                const revenueSum = sum(effective.map(y => y.revenue || 0));
+
+                if (service.type === 'subscription') {
+                    const last = effective[effective.length - 1] || {};
+                    const users = last.users || service.totalUsers;
+                    const activeRatio = service.totalUsers ? (service.activeUsers / service.totalUsers) : 0.85;
+                    return {
+                        users,
+                        activeUsers: Math.round(users * activeRatio),
+                        purchases: 0,
+                        uniqueUsers: 0,
+                        revenue: revenueSum,
+                        tax: revenueSum * revenueRatioTax,
+                        profit: revenueSum * revenueRatioProfit,
+                        churn: avg(effective.map(y => y.churn || 0)),
+                        retention: avg(effective.map(y => y.retention || 0)),
+                        winBack: avg(effective.map(y => y.winBack || 0))
+                    };
+                }
+
+                const purchasesSum = sum(effective.map(y => y.purchases || 0));
+                const last = effective[effective.length - 1] || {};
+                const uniqueUsers = last.uniqueUsers || service.uniqueUsers;
+                return {
+                    users: uniqueUsers,
+                    activeUsers: uniqueUsers,
+                    purchases: purchasesSum,
+                    uniqueUsers,
+                    revenue: revenueSum,
+                    tax: revenueSum * revenueRatioTax,
+                    profit: revenueSum * revenueRatioProfit,
+                    churn: 0,
+                    retention: service.repeatPurchaseRate || 0,
+                    winBack: 0
+                };
+            }
+
+            // monthly (پیش‌فرض)
+            const { startIdx, endIdx } = getMonthIndexRange(currentStartDate, currentEndDate);
+            const revenueArr = (service.monthlyRevenue || []).slice(startIdx, endIdx + 1);
+            const revenueSum = sum(revenueArr);
+
+            if (service.type === 'subscription') {
+                const usersArr = (service.monthlyUsers || []).slice(startIdx, endIdx + 1);
+                const activeArr = (service.monthlyActiveUsers || []).slice(startIdx, endIdx + 1);
+                const churnArr = (service.monthlyChurn || []).slice(startIdx, endIdx + 1);
+                const retentionArr = (service.monthlyRetention || []).slice(startIdx, endIdx + 1);
+                const winBackArr = (service.monthlyWinBack || []).slice(startIdx, endIdx + 1);
+                const users = usersArr.length ? usersArr[usersArr.length - 1] : service.totalUsers;
+                const activeUsers = activeArr.length ? activeArr[activeArr.length - 1] : service.activeUsers;
+                return {
+                    users,
+                    activeUsers,
+                    purchases: 0,
+                    uniqueUsers: 0,
+                    revenue: revenueSum,
+                    tax: revenueSum * revenueRatioTax,
+                    profit: revenueSum * revenueRatioProfit,
+                    churn: avg(churnArr),
+                    retention: avg(retentionArr),
+                    winBack: avg(winBackArr)
+                };
+            }
+
+            const purchasesArr = (service.monthlyPurchases || []).slice(startIdx, endIdx + 1);
+            const uniqueArr = (service.monthlyUniqueUsers || []).slice(startIdx, endIdx + 1);
+            const purchases = sum(purchasesArr);
+            const uniqueUsers = uniqueArr.length ? uniqueArr[uniqueArr.length - 1] : service.uniqueUsers;
+            return {
+                users: uniqueUsers,
+                activeUsers: uniqueUsers,
+                purchases,
+                uniqueUsers,
+                revenue: revenueSum,
+                tax: revenueSum * revenueRatioTax,
+                profit: revenueSum * revenueRatioProfit,
+                churn: 0,
+                retention: service.repeatPurchaseRate || 0,
+                winBack: 0
+            };
+        }
+
+        // تولید داده‌های روزانه بر اساس داده‌های ماهانه
+        function generateDailyData(totalValue, totalRevenue, monthsCount, isOndemand = false) {
+            const dailyData = [];
+            const daysInMonth = [31, 31, 31, 31, 31, 31, 30, 30, 30, 30, 30, 29];
+            
+            for (let month = 0; month < monthsCount; month++) {
+                const days = daysInMonth[month];
+                // ondemand: totalValue = کل خریدهای سال → توزیع روی سال
+                // subscription: totalValue = تعداد مشترک → هر ماه یک شارژ/تمدید (موفق/ناموفق)
+                const attemptedMonthly = isOndemand ? (totalValue / monthsCount) : totalValue;
+                const dailyAttemptedAvg = attemptedMonthly / days;
+                const dailyRevenueAvg = (totalRevenue / monthsCount) / days;
+
+                // ترکیب کانال شارژ: اعتباری/دائمی (تقریبی)
+                const prepaidShare = 0.65;   // اعتباری
+                const postpaidShare = 0.35;  // دائمی
+                const prepaidSuccessBase = 0.90;
+                const postpaidSuccessBase = 0.985;
+                
+                for (let day = 1; day <= days; day++) {
+                    const variance = 0.85 + Math.random() * 0.3; // 85% to 115% variance
+                    const attempted = Math.max(0, Math.round(dailyAttemptedAvg * variance));
+
+                    // موفقیت شارژ در اعتباری معمولاً کمتر (کمبود اعتبار)، در دائمی بالاتر (روی قبض)
+                    const successRate = isOndemand
+                        ? 1
+                        : (
+                            prepaidShare * (prepaidSuccessBase + (Math.random() - 0.5) * 0.03) +
+                            postpaidShare * (postpaidSuccessBase + (Math.random() - 0.5) * 0.01)
+                          );
+                    const success = Math.max(0, Math.min(attempted, Math.round(attempted * successRate)));
+                    const failed = Math.max(0, attempted - success);
+
+                    dailyData.push({
+                        date: `1402/${String(month + 1).padStart(2, '0')}/${String(day).padStart(2, '0')}`,
+                        // value = شاخص اصلی نمودار کاربران/خریدها
+                        // برای اشتراکی‌ها: تعداد شارژ/تمدید موفق
+                        // برای رویدادی‌ها: تعداد خرید
+                        value: isOndemand ? attempted : success,
+                        attempted,
+                        success,
+                        failed,
+                        revenue: Math.round(dailyRevenueAvg * variance * (isOndemand ? 1 : (attempted > 0 ? (success / attempted) : 0)))
+                    });
+                }
+            }
+            return dailyData;
+        }
+
+        let revenueChart, usersChart, revenuePieChart, churnChart, winBackChart;
+        let currentServiceType = 'all';
+        let currentChurnView = 'churn';
+        let currentTimeType = 'monthly';
+        let currentStartDate = '1402/01/01';
+        let currentEndDate = '1402/12/29';
+        let currentYear = 1402;
+        let currentMonth = 12;
+
+        // Initialize Dashboard
+        function initDashboard() {
+            updateStats();
+            updateComparison();
+            initCharts();
+            populateTable();
+            updateMonthlyTable();
+            updatePricingTable();
+        }
+
+        // Update Stats Cards
+        function updateStats() {
+            const filtered = getFilteredServices();
+            
+            let totalUsers = 0;
+            let totalRevenue = 0;
+            let totalProfit = 0;
+            let totalTax = 0;
+            
+            filtered.forEach(s => {
+                const m = getServicePeriodMetrics(s);
+                totalUsers += (s.type === 'subscription' ? (m.activeUsers || 0) : (m.users || 0));
+                totalRevenue += (m.revenue || 0);
+                totalProfit += (m.profit || 0);
+                totalTax += (m.tax || 0);
+            });
+            
+            const avgProfitMargin = ((totalProfit / totalRevenue) * 100).toFixed(1);
+            
+            const subscriptionServices = filtered.filter(s => s.type === 'subscription');
+            let avgChurn = 0;
+            let avgRetention = 0;
+            
+            if (subscriptionServices.length > 0) {
+                avgChurn = (subscriptionServices.reduce((sum, s) => sum + (getServicePeriodMetrics(s).churn || 0), 0) / subscriptionServices.length).toFixed(1);
+                avgRetention = (subscriptionServices.reduce((sum, s) => sum + (getServicePeriodMetrics(s).retention || 0), 0) / subscriptionServices.length).toFixed(1);
+            }
+            
+            const ondemandServices = filtered.filter(s => s.type === 'ondemand');
+            let avgRepeatPurchase = 0;
+            
+            if (ondemandServices.length > 0) {
+                avgRepeatPurchase = (ondemandServices.reduce((sum, s) => sum + s.repeatPurchaseRate, 0) / ondemandServices.length).toFixed(1);
+            }
+
+            const statsHTML = `
+                <div class="stat-card">
+                    <div class="stat-icon">👥</div>
+                    <div class="stat-label">کل کاربران فعال</div>
+                    <div class="stat-value">${(totalUsers / 1000000).toFixed(2)}M</div>
+                    <span class="stat-change positive">↑ 12.5%</span>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">💰</div>
+                    <div class="stat-label">کل درآمد (میلیارد تومان)</div>
+                    <div class="stat-value">${(totalRevenue / 1000).toFixed(2)}</div>
+                    <span class="stat-change positive">↑ 8.3%</span>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🏛️</div>
+                    <div class="stat-label">مالیات (میلیارد تومان)</div>
+                    <div class="stat-value">${(totalTax / 1000).toFixed(2)}</div>
+                    <span class="stat-change">15% از درآمد</span>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">💎</div>
+                    <div class="stat-label">سود خالص (میلیارد تومان)</div>
+                    <div class="stat-value">${(totalProfit / 1000).toFixed(2)}</div>
+                    <span class="stat-change positive">↑ 15.7%</span>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📊</div>
+                    <div class="stat-label">حاشیه سود</div>
+                    <div class="stat-value">${avgProfitMargin}%</div>
+                    <span class="stat-change positive">↑ 3.2%</span>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📉</div>
+                    <div class="stat-label">میانگین نرخ ریزش</div>
+                    <div class="stat-value">${avgChurn}%</div>
+                    <span class="stat-change negative">↑ 0.8%</span>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🔄</div>
+                    <div class="stat-label">میانگین نرخ ماندگاری</div>
+                    <div class="stat-value">${avgRetention}%</div>
+                    <span class="stat-change positive">↑ 1.2%</span>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🔁</div>
+                    <div class="stat-label">نرخ خرید مجدد</div>
+                    <div class="stat-value">${avgRepeatPurchase}%</div>
+                    <span class="stat-change positive">↑ 2.8%</span>
+                </div>
+            `;
+
+            // محاسبه Win-back Rate برای سرویس‌های اشتراکی
+            if (subscriptionServices.length > 0) {
+                const avgWinBack = (subscriptionServices.reduce((sum, s) => sum + (getServicePeriodMetrics(s).winBack || 0), 0) / subscriptionServices.length).toFixed(1);
+                document.getElementById('statsGrid').innerHTML = statsHTML + `
+                    <div class="stat-card" style="border-color: rgba(52, 211, 153, 0.4);">
+                        <div class="stat-icon">🔄</div>
+                        <div class="stat-label">نرخ بازگشت (Win-back)</div>
+                        <div class="stat-value" style="background: linear-gradient(135deg, #34d399, #10b981); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">${avgWinBack}%</div>
+                        <span class="stat-change positive">↑ 4.2%</span>
+                    </div>
+                `;
+            } else {
+                document.getElementById('statsGrid').innerHTML = statsHTML;
+            }
+        }
+
+        function updateComparison() {
+            const subscriptionServices = Object.entries(servicesData).filter(([_, s]) => s.type === 'subscription');
+            const ondemandServices = Object.entries(servicesData).filter(([_, s]) => s.type === 'ondemand');
+
+            const subStats = calculateGroupStats(subscriptionServices);
+            const odStats = calculateGroupStats(ondemandServices);
+
+            const comparisonHTML = `
+                <div class="comparison-card subscription-card">
+                    <div class="comparison-title">🔄 سرویس‌های اشتراکی</div>
+                    <div class="comparison-stats">
+                        <div class="comparison-stat">
+                            <span class="comparison-stat-label">تعداد سرویس</span>
+                            <span class="comparison-stat-value">${subscriptionServices.length}</span>
+                        </div>
+                        <div class="comparison-stat">
+                            <span class="comparison-stat-label">کل کاربران فعال</span>
+                            <span class="comparison-stat-value">${(subStats.users / 1000000).toFixed(2)}M</span>
+                        </div>
+                        <div class="comparison-stat">
+                            <span class="comparison-stat-label">درآمد (میلیارد تومان)</span>
+                            <span class="comparison-stat-value">${(subStats.revenue / 1000).toFixed(2)}</span>
+                        </div>
+                        <div class="comparison-stat">
+                            <span class="comparison-stat-label">سود خالص (میلیارد تومان)</span>
+                            <span class="comparison-stat-value">${(subStats.profit / 1000).toFixed(2)}</span>
+                        </div>
+                        <div class="comparison-stat">
+                            <span class="comparison-stat-label">حاشیه سود</span>
+                            <span class="comparison-stat-value">${((subStats.profit / subStats.revenue) * 100).toFixed(1)}%</span>
+                        </div>
+                        <div class="comparison-stat">
+                            <span class="comparison-stat-label">میانگین نرخ ریزش</span>
+                            <span class="comparison-stat-value">${subStats.churn.toFixed(1)}%</span>
+                        </div>
+                        <div class="comparison-stat">
+                            <span class="comparison-stat-label">میانگین نرخ ماندگاری</span>
+                            <span class="comparison-stat-value">${subStats.retention.toFixed(1)}%</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="comparison-card ondemand-card">
+                    <div class="comparison-title">⚡ سرویس‌های رویدادی</div>
+                    <div class="comparison-stats">
+                        <div class="comparison-stat">
+                            <span class="comparison-stat-label">تعداد سرویس</span>
+                            <span class="comparison-stat-value">${ondemandServices.length}</span>
+                        </div>
+                        <div class="comparison-stat">
+                            <span class="comparison-stat-label">کل خریدها</span>
+                            <span class="comparison-stat-value">${(odStats.purchases / 1000000).toFixed(2)}M</span>
+                        </div>
+                        <div class="comparison-stat">
+                            <span class="comparison-stat-label">کاربران یکتا</span>
+                            <span class="comparison-stat-value">${(odStats.users / 1000000).toFixed(2)}M</span>
+                        </div>
+                        <div class="comparison-stat">
+                            <span class="comparison-stat-label">درآمد (میلیارد تومان)</span>
+                            <span class="comparison-stat-value">${(odStats.revenue / 1000).toFixed(2)}</span>
+                        </div>
+                        <div class="comparison-stat">
+                            <span class="comparison-stat-label">سود خالص (میلیارد تومان)</span>
+                            <span class="comparison-stat-value">${(odStats.profit / 1000).toFixed(2)}</span>
+                        </div>
+                        <div class="comparison-stat">
+                            <span class="comparison-stat-label">حاشیه سود</span>
+                            <span class="comparison-stat-value">${((odStats.profit / odStats.revenue) * 100).toFixed(1)}%</span>
+                        </div>
+                        <div class="comparison-stat">
+                            <span class="comparison-stat-label">نرخ خرید مجدد</span>
+                            <span class="comparison-stat-value">${odStats.repeatPurchase.toFixed(1)}%</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('comparisonGrid').innerHTML = comparisonHTML;
+        }
+
+        function calculateGroupStats(services) {
+            let users = 0;
+            let purchases = 0;
+            let revenue = 0;
+            let profit = 0;
+            let churn = 0;
+            let retention = 0;
+            let repeatPurchase = 0;
+            let subscriptionCount = 0;
+            let ondemandCount = 0;
+            
+            services.forEach(([_, s]) => {
+                const m = getServicePeriodMetrics(s);
+                revenue += (m.revenue || 0);
+                profit += (m.profit || 0);
+                
+                if (s.type === 'subscription') {
+                    users += (m.activeUsers || m.users || 0);
+                    churn += (m.churn || 0);
+                    retention += (m.retention || 0);
+                    subscriptionCount++;
+                } else {
+                    purchases += (m.purchases || 0);
+                    users += (m.users || 0);
+                    repeatPurchase += (s.repeatPurchaseRate || 0);
+                    ondemandCount++;
+                }
+            });
+            
+            churn = subscriptionCount > 0 ? churn / subscriptionCount : 0;
+            retention = subscriptionCount > 0 ? retention / subscriptionCount : 0;
+            repeatPurchase = ondemandCount > 0 ? repeatPurchase / ondemandCount : 0;
+            
+            return { users, purchases, revenue, profit, churn, retention, repeatPurchase };
+        }
+
+        // Filter Services
+        function getFilteredServices() {
+            return Object.values(servicesData).filter(s => 
+                currentServiceType === 'all' || s.type === currentServiceType
+            );
+        }
+
+        // Initialize Charts
+        function initCharts() {
+            const ctx1 = document.getElementById('revenueChart').getContext('2d');
+            const ctx2 = document.getElementById('usersChart').getContext('2d');
+            const ctx3 = document.getElementById('revenuePieChart').getContext('2d');
+            const ctx4 = document.getElementById('churnChart').getContext('2d');
+
+            const chartOptions = {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            color: '#e4e4e4',
+                            font: { family: 'Vazirmatn', size: 12 },
+                            padding: 15
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(26, 26, 46, 0.95)',
+                        titleColor: '#e4e4e4',
+                        bodyColor: '#e4e4e4',
+                        borderColor: '#6366f1',
+                        borderWidth: 1,
+                        padding: 12,
+                        displayColors: true,
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                if (context.parsed.y !== null) {
+                                    label += context.parsed.y.toLocaleString();
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        ticks: { color: '#b2bec3', font: { family: 'Vazirmatn' } },
+                        grid: { color: 'rgba(42, 58, 92, 0.3)' }
+                    },
+                    y: {
+                        ticks: { color: '#b2bec3', font: { family: 'Vazirmatn' } },
+                        grid: { color: 'rgba(42, 58, 92, 0.3)' }
+                    }
+                }
+            };
+
+            revenueChart = new Chart(ctx1, {
+                type: 'line',
+                data: getRevenueChartData('all'),
+                options: chartOptions
+            });
+
+            usersChart = new Chart(ctx2, {
+                type: 'bar',
+                data: getUsersChartData('all'),
+                options: chartOptions
+            });
+
+            revenuePieChart = new Chart(ctx3, {
+                type: 'pie',
+                data: getRevenuePieData(),
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                            labels: {
+                                color: '#e4e4e4',
+                                font: { family: 'Vazirmatn', size: 12 },
+                                padding: 15
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.label || '';
+                                    const value = context.parsed || 0;
+                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percentage = ((value / total) * 100).toFixed(1);
+                                    return `${label}: ${(value / 1000).toFixed(2)} میلیارد (${percentage}%)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            churnChart = new Chart(ctx4, {
+                type: 'line',
+                data: getChurnChartData('churn'),
+                options: chartOptions
+            });
+
+            const ctx5 = document.getElementById('winBackChart').getContext('2d');
+            winBackChart = new Chart(ctx5, {
+                type: 'bar',
+                data: getWinBackChartData(),
+                options: {
+                    ...chartOptions,
+                    plugins: {
+                        ...chartOptions.plugins,
+                        legend: {
+                            ...chartOptions.plugins.legend,
+                            display: true
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Monthly Details Table
+        function updateMonthlyTable() {
+            const serviceId = document.getElementById('monthlyServiceSelector').value;
+            const service = servicesData[serviceId];
+            let html = '';
+
+            if (currentTimeType === 'daily') {
+                const rows = filterDailyDataByRange(service.dailyData || [], currentStartDate, currentEndDate);
+                const effectiveRows = rows.length > 0 ? rows : (service.dailyData || []).slice(-30);
+
+                const maxRows = 62;
+                const displayRows = effectiveRows.slice(0, maxRows);
+
+                displayRows.forEach(r => {
+                    const label = formatDailyLabel(r.date);
+                    const isSubscription = service.type === 'subscription';
+                    const colUsersOrPurchases = isSubscription ? (r.attempted ?? r.value ?? 0) : (r.value ?? 0);
+                    const colActiveOrUnique = isSubscription ? (r.success ?? r.value ?? 0) : Math.round((r.value ?? 0) * 0.75);
+                    html += `
+                        <tr>
+                            <td><strong>${label}</strong></td>
+                            <td>${(r.revenue || 0).toLocaleString()}</td>
+                            <td>${(colUsersOrPurchases || 0).toLocaleString()}</td>
+                            <td>${(colActiveOrUnique || 0).toLocaleString()}</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                        </tr>
+                    `;
+                });
+
+                if (effectiveRows.length > maxRows) {
+                    html += `
+                        <tr>
+                            <td colspan="8" style="text-align:center; color: var(--muted);">
+                                نمایش محدود شد: ${maxRows.toLocaleString()} ردیف از ${effectiveRows.length.toLocaleString()} روز
+                            </td>
+                        </tr>
+                    `;
+                }
+            } else if (currentTimeType === 'yearly' && Array.isArray(service.yearlyData)) {
+                const yr = getYearRange(currentStartDate, currentEndDate);
+                const ranged = service.yearlyData.filter(y => y.year >= yr.startYear && y.year <= yr.endYear);
+                const rows = ranged.length > 0 ? ranged : service.yearlyData;
+
+                rows.forEach(y => {
+                    const isSubscription = service.type === 'subscription';
+                    const users = isSubscription ? (y.users || 0) : (y.purchases || 0);
+                    const activeUsers = isSubscription
+                        ? Math.round((y.users || 0) * (service.totalUsers ? (service.activeUsers / service.totalUsers) : 0.85))
+                        : (y.uniqueUsers || 0);
+                    const churn = isSubscription && y.churn != null ? `${y.churn}%` : '-';
+                    const retention = isSubscription && y.retention != null ? `${y.retention}%` : '-';
+                    const winBack = isSubscription && y.winBack != null ? `<strong style="color: #34d399">${y.winBack}%</strong>` : '-';
+                    const tickets = y.tickets != null ? y.tickets : '-';
+
+                    html += `
+                        <tr>
+                            <td><strong>${y.year}</strong></td>
+                            <td>${(y.revenue || 0).toLocaleString()}</td>
+                            <td>${users.toLocaleString()}</td>
+                            <td>${activeUsers.toLocaleString()}</td>
+                            <td>${churn}</td>
+                            <td>${retention}</td>
+                            <td>${winBack}</td>
+                            <td>${tickets}</td>
+                        </tr>
+                    `;
+                });
+            } else {
+                const mr = getMonthIndexRange(currentStartDate, currentEndDate);
+                const startIdx = mr.startIdx;
+                const endIdx = mr.endIdx;
+
+                months.slice(startIdx, endIdx + 1).forEach((month, i) => {
+                    const index = startIdx + i;
+                    const isSubscription = service.type === 'subscription';
+                    const users = isSubscription ? service.monthlyUsers[index] : service.monthlyPurchases[index];
+                    const activeUsers = isSubscription ? service.monthlyActiveUsers[index] : service.monthlyUniqueUsers[index];
+                    const churn = isSubscription ? service.monthlyChurn[index] + '%' : '-';
+                    const retention = isSubscription ? service.monthlyRetention[index] + '%' : '-';
+                    const winBack = isSubscription ? '<strong style="color: #34d399">' + service.monthlyWinBack[index] + '%</strong>' : '-';
+                    const tickets = service.monthlyTickets ? service.monthlyTickets[index] : '-';
+
+                    html += `
+                        <tr>
+                            <td><strong>${month}</strong></td>
+                            <td>${service.monthlyRevenue[index].toLocaleString()}</td>
+                            <td>${users.toLocaleString()}</td>
+                            <td>${activeUsers.toLocaleString()}</td>
+                            <td>${churn}</td>
+                            <td>${retention}</td>
+                            <td>${winBack}</td>
+                            <td>${tickets}</td>
+                        </tr>
+                    `;
+                });
+            }
+            
+            document.getElementById('monthlyDetailsBody').innerHTML = html;
+        }
+        
+        // Pricing Table
+        function updatePricingTable() {
+            const serviceId = document.getElementById('pricingServiceSelector').value;
+            const service = servicesData[serviceId];
+            let html = '';
+            
+            const totalValue = service.pricingTiers.reduce((sum, tier) => {
+                return sum + (tier.price * (service.type === 'subscription' ? tier.users : tier.purchases));
+            }, 0);
+            
+            service.pricingTiers.forEach(tier => {
+                const count = service.type === 'subscription' ? tier.users : tier.purchases;
+                const revenue = (tier.price * count) / 1000000; // به میلیون تومان
+                const share = ((tier.price * count) / totalValue * 100).toFixed(1);
+                
+                html += `
+                    <tr>
+                        <td><strong>${tier.name}</strong></td>
+                        <td>${tier.price.toLocaleString()}</td>
+                        <td>${count.toLocaleString()}</td>
+                        <td>${revenue.toFixed(1)}</td>
+                        <td>
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <div style="flex: 1; background: var(--secondary); border-radius: 10px; height: 20px; overflow: hidden;">
+                                    <div style="width: ${share}%; height: 100%; background: linear-gradient(90deg, var(--accent), var(--info)); transition: width 0.3s;"></div>
+                                </div>
+                                <span style="min-width: 50px;">${share}%</span>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            document.getElementById('pricingBody').innerHTML = html;
+        }
+
+        function getRevenuePieData() {
+            const labels = [];
+            const data = [];
+            const colors = ['#00b894', '#0984e3', '#e17055', '#fdcb6e', '#a29bfe', '#fd79a8', '#00cec9', '#55efc4'];
+
+            const filteredEntries = Object.entries(servicesData).filter(([_, s]) =>
+                currentServiceType === 'all' || s.type === currentServiceType
+            );
+
+            filteredEntries.forEach(([id, service]) => {
+                const m = getServicePeriodMetrics(service);
+                labels.push(`${id} - ${service.name}`);
+                data.push(m.revenue || 0);
+            });
+            
+            return {
+                labels: labels,
+                datasets: [{
+                    data: data,
+                    backgroundColor: colors
+                }]
+            };
+        }
+
+        function getChurnChartData(view) {
+            const datasets = [];
+            const colors = {
+                'A': '#00b894', 'B': '#0984e3', 'D': '#fdcb6e', 'E': '#a29bfe', 'G': '#00cec9', 'H': '#55efc4'
+            };
+            
+            let labels = months;
+            let startIdx = 0;
+            let endIdx = 11;
+            let startYear = DATA_MIN_YEAR;
+            let endYear = DATA_MAX_YEAR;
+
+            if (currentTimeType === 'yearly') {
+                const yr = getYearRange(currentStartDate, currentEndDate);
+                startYear = yr.startYear;
+                endYear = yr.endYear;
+                labels = [];
+                for (let y = startYear; y <= endYear; y++) labels.push(String(y));
+            } else {
+                // churn/retention با granularity ماهانه گزارش می‌شود (حتی اگر حالت daily باشد)
+                const mr = getMonthIndexRange(currentStartDate, currentEndDate);
+                startIdx = mr.startIdx;
+                endIdx = mr.endIdx;
+                labels = months.slice(startIdx, endIdx + 1);
+            }
+            
+            Object.entries(servicesData).forEach(([id, service]) => {
+                if (service.type === 'subscription') {
+                    if (view === 'churn' || view === 'both') {
+                        let data = [];
+                        if (currentTimeType === 'yearly' && service.yearlyData) {
+                            data = service.yearlyData
+                                .filter(y => y.year >= startYear && y.year <= endYear)
+                                .map(y => y.churn);
+                        } else {
+                            data = (service.monthlyChurn || []).slice(startIdx, endIdx + 1);
+                        }
+                        
+                        datasets.push({
+                            label: `${id} - نرخ ریزش`,
+                            data: data,
+                            borderColor: colors[id],
+                            backgroundColor: colors[id] + '33',
+                            tension: 0.4,
+                            hidden: view === 'both' ? false : false
+                        });
+                    }
+                    
+                    if (view === 'retention' || view === 'both') {
+                        let data = [];
+                        if (currentTimeType === 'yearly' && service.yearlyData) {
+                            data = service.yearlyData
+                                .filter(y => y.year >= startYear && y.year <= endYear)
+                                .map(y => y.retention);
+                        } else {
+                            data = (service.monthlyRetention || []).slice(startIdx, endIdx + 1);
+                        }
+                        
+                        datasets.push({
+                            label: `${id} - نرخ ماندگاری`,
+                            data: data,
+                            borderColor: colors[id],
+                            backgroundColor: colors[id] + '33',
+                            borderDash: view === 'both' ? [5, 5] : [],
+                            tension: 0.4
+                        });
+                    }
+                }
+            });
+            
+            return { labels, datasets };
+        }
+
+        function getWinBackChartData() {
+            const datasets = [];
+            const colors = {
+                'A': '#00b894', 'B': '#0984e3', 'D': '#fdcb6e', 'E': '#a29bfe', 'G': '#00cec9', 'H': '#55efc4'
+            };
+            
+            let labels = months;
+            let startIdx = 0;
+            let endIdx = 11;
+            let startYear = DATA_MIN_YEAR;
+            let endYear = DATA_MAX_YEAR;
+
+            if (currentTimeType === 'yearly') {
+                const yr = getYearRange(currentStartDate, currentEndDate);
+                startYear = yr.startYear;
+                endYear = yr.endYear;
+                labels = [];
+                for (let y = startYear; y <= endYear; y++) labels.push(String(y));
+            } else {
+                // Win-back هم با granularity ماهانه گزارش می‌شود
+                const mr = getMonthIndexRange(currentStartDate, currentEndDate);
+                startIdx = mr.startIdx;
+                endIdx = mr.endIdx;
+                labels = months.slice(startIdx, endIdx + 1);
+            }
+            
+            Object.entries(servicesData).forEach(([id, service]) => {
+                if (service.type === 'subscription' && service.monthlyWinBack) {
+                    let data = [];
+                    if (currentTimeType === 'yearly' && service.yearlyData) {
+                        data = service.yearlyData
+                            .filter(y => y.year >= startYear && y.year <= endYear)
+                            .map(y => y.winBack);
+                    } else {
+                        data = (service.monthlyWinBack || []).slice(startIdx, endIdx + 1);
+                    }
+                    
+                    datasets.push({
+                        label: `${id} - ${service.name}`,
+                        data: data,
+                        backgroundColor: colors[id],
+                        borderColor: colors[id],
+                        borderWidth: 2
+                    });
+                }
+            });
+            
+            return { labels, datasets };
+        }
+
+        function switchChurnView(view) {
+            currentChurnView = view;
+            document.querySelectorAll('.chart-tabs .chart-tab').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            churnChart.data = getChurnChartData(view);
+            churnChart.update();
+        }
+
+        function getRevenueChartData(filter) {
+            const datasets = [];
+            const colors = {
+                'A': '#00b894', 'B': '#0984e3', 'C': '#e17055',
+                'D': '#fdcb6e', 'E': '#a29bfe', 'F': '#fd79a8', 'G': '#00cec9', 'H': '#55efc4'
+            };
+
+            let labels = months;
+            let startIdx = 0;
+            let endIdx = 11;
+            let startYear = DATA_MIN_YEAR;
+            let endYear = DATA_MAX_YEAR;
+
+            if (currentTimeType === 'yearly') {
+                const yr = getYearRange(currentStartDate, currentEndDate);
+                startYear = yr.startYear;
+                endYear = yr.endYear;
+                labels = [];
+                for (let y = startYear; y <= endYear; y++) labels.push(String(y));
+            } else if (currentTimeType === 'daily') {
+                labels = [];
+            } else {
+                const mr = getMonthIndexRange(currentStartDate, currentEndDate);
+                startIdx = mr.startIdx;
+                endIdx = mr.endIdx;
+                labels = months.slice(startIdx, endIdx + 1);
+            }
+
+            Object.entries(servicesData).forEach(([id, service]) => {
+                if (filter === 'all' || service.type === filter) {
+                    let data = [];
+                    let dailyLabels = null;
+                    
+                    if (currentTimeType === 'yearly' && service.yearlyData) {
+                        data = service.yearlyData
+                            .filter(y => y.year >= startYear && y.year <= endYear)
+                            .map(y => parseFloat((((y.revenue || 0) / 1000)).toFixed(2)));
+                    } else if (currentTimeType === 'daily' && service.dailyData) {
+                        const rows = filterDailyDataByRange(service.dailyData, currentStartDate, currentEndDate);
+                        const effectiveRows = rows.length > 0 ? rows : service.dailyData.slice(-30);
+                        dailyLabels = effectiveRows.map(r => formatDailyLabel(r.date));
+                        data = effectiveRows.map(d => parseFloat((((d.revenue || 0) / 1000)).toFixed(2)));
+                    } else {
+                        data = (service.monthlyRevenue || [])
+                            .slice(startIdx, endIdx + 1)
+                            .map(r => parseFloat(((r / 1000)).toFixed(2)));
+                    }
+
+                    if (currentTimeType === 'daily' && dailyLabels && dailyLabels.length > 0 && labels.length === 0) {
+                        labels = dailyLabels;
+                    }
+                    
+                    datasets.push({
+                        label: `سرویس ${id} - ${service.name}`,
+                        data: data,
+                        borderColor: colors[id],
+                        backgroundColor: colors[id] + '33',
+                        tension: 0.4
+                    });
+                }
+            });
+
+            return { labels, datasets };
+        }
+
+        function getUsersChartData(filter) {
+            const datasets = [];
+            const colors = {
+                'A': '#00b894', 'B': '#0984e3', 'C': '#e17055',
+                'D': '#fdcb6e', 'E': '#a29bfe', 'F': '#fd79a8', 'G': '#00cec9', 'H': '#55efc4'
+            };
+
+            let labels = months;
+            let startIdx = 0;
+            let endIdx = 11;
+            let startYear = DATA_MIN_YEAR;
+            let endYear = DATA_MAX_YEAR;
+
+            if (currentTimeType === 'yearly') {
+                const yr = getYearRange(currentStartDate, currentEndDate);
+                startYear = yr.startYear;
+                endYear = yr.endYear;
+                labels = [];
+                for (let y = startYear; y <= endYear; y++) labels.push(String(y));
+            } else if (currentTimeType === 'daily') {
+                labels = [];
+            } else {
+                const mr = getMonthIndexRange(currentStartDate, currentEndDate);
+                startIdx = mr.startIdx;
+                endIdx = mr.endIdx;
+                labels = months.slice(startIdx, endIdx + 1);
+            }
+
+            Object.entries(servicesData).forEach(([id, service]) => {
+                if (filter === 'all' || service.type === filter) {
+                    let data = [];
+                    let label = '';
+                    let dailyLabels = null;
+                    
+                    if (currentTimeType === 'yearly' && service.yearlyData) {
+                        if (service.type === 'subscription') {
+                            data = service.yearlyData
+                                .filter(y => y.year >= startYear && y.year <= endYear)
+                                .map(y => y.users);
+                            label = `سرویس ${id} - ${service.name} (کاربران)`;
+                        } else {
+                            data = service.yearlyData
+                                .filter(y => y.year >= startYear && y.year <= endYear)
+                                .map(y => y.purchases);
+                            label = `سرویس ${id} - ${service.name} (خریدها)`;
+                        }
+                    } else if (currentTimeType === 'daily' && service.dailyData) {
+                        const rows = filterDailyDataByRange(service.dailyData, currentStartDate, currentEndDate);
+                        const effectiveRows = rows.length > 0 ? rows : service.dailyData.slice(-30);
+                        dailyLabels = effectiveRows.map(r => formatDailyLabel(r.date));
+                        data = effectiveRows.map(d => d.value);
+                        label = service.type === 'subscription' 
+                            ? `سرویس ${id} - ${service.name} (شارژ/تمدید موفق)` 
+                            : `سرویس ${id} - ${service.name} (خریدها)`;
+                    } else {
+                        data = service.type === 'subscription' 
+                            ? (service.monthlyUsers || []).slice(startIdx, endIdx + 1)
+                            : (service.monthlyPurchases || []).slice(startIdx, endIdx + 1);
+                        label = service.type === 'subscription' 
+                            ? `سرویس ${id} - ${service.name} (کاربران)` 
+                            : `سرویس ${id} - ${service.name} (خریدها)`;
+                    }
+
+                    if (currentTimeType === 'daily' && dailyLabels && dailyLabels.length > 0 && labels.length === 0) {
+                        labels = dailyLabels;
+                    }
+                    
+                    datasets.push({
+                        label: label,
+                        data: data,
+                        backgroundColor: colors[id],
+                    });
+                }
+            });
+
+            return { labels, datasets };
+        }
+
+        // Populate Table
+        function populateTable() {
+            const filtered = getFilteredServices();
+            let html = `
+                <thead>
+                    <tr>
+                        <th>سرویس</th>
+                        <th>نام</th>
+                        <th>نوع</th>
+                        <th>کاربران / خریدها</th>
+                        <th>کاربران فعال</th>
+                        <th>درآمد (میلیارد تومان)</th>
+                        <th>مالیات (میلیارد تومان)</th>
+                        <th>سود (میلیارد تومان)</th>
+                        <th>حاشیه سود</th>
+                        <th>نرخ ریزش</th>
+                        <th>نرخ ماندگاری</th>
+                        <th>نرخ بازگشت</th>
+                        <th>تیکت‌ها</th>
+                    </tr>
+                </thead>
+                <tbody>
+            `;
+
+            filtered.forEach(service => {
+                const m = getServicePeriodMetrics(service);
+                const profitMargin = m.revenue ? ((m.profit / m.revenue) * 100).toFixed(1) : '0.0';
+
+                // ستون "کاربران / خریدها" بر اساس نوع سرویس و سطح گزارش
+                const users = service.type === 'subscription'
+                    ? (m.users || 0)
+                    : (m.purchases || 0);
+
+                const activeUsers = service.type === 'subscription'
+                    ? (m.activeUsers || 0)
+                    : (m.users || 0);
+
+                const churnDisplay = service.type === 'subscription' ? `${(m.churn || 0).toFixed(1)}%` : '-';
+                const retentionDisplay = service.type === 'subscription'
+                    ? `${(m.retention || 0).toFixed(1)}%`
+                    : (service.repeatPurchaseRate ? `${service.repeatPurchaseRate}%` : '-');
+                const winBackDisplay = service.type === 'subscription' ? `<strong style="color: #34d399">${(m.winBack || 0).toFixed(1)}%</strong>` : '-';
+                const ticketsDisplay = service.tickets || '-';
+
+                html += `
+                    <tr>
+                        <td><strong>${service.id || Object.keys(servicesData).find(k => servicesData[k] === service)}</strong></td>
+                        <td>${service.name}</td>
+                        <td><span class="badge ${service.type}">${service.type === 'subscription' ? '🔄 اشتراکی' : '⚡ رویدادی'}</span></td>
+                        <td>${users.toLocaleString()}</td>
+                        <td>${activeUsers.toLocaleString()}</td>
+                        <td><strong>${((m.revenue || 0) / 1000).toFixed(2)}</strong></td>
+                        <td><strong>${((m.tax || 0) / 1000).toFixed(2)}</strong></td>
+                        <td><strong>${((m.profit || 0) / 1000).toFixed(2)}</strong></td>
+                        <td><strong>${profitMargin}%</strong></td>
+                        <td>${churnDisplay}</td>
+                        <td>${retentionDisplay}</td>
+                        <td>${winBackDisplay}</td>
+                        <td>${ticketsDisplay}</td>
+                    </tr>
+                `;
+            });
+
+            html += '</tbody>';
+            document.getElementById('servicesTable').innerHTML = html;
+        }
+
+        // Switch Service Type
+        function switchServiceType(type) {
+            currentServiceType = type;
+            
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            updateStats();
+            updateComparison();
+            populateTable();
+        }
+
+        // Switch Chart Views
+        function switchRevenueView(view) {
+            document.querySelectorAll('.chart-tabs .chart-tab').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            revenueChart.data = getRevenueChartData(view);
+            revenueChart.update();
+        }
+
+        function switchUsersView(view) {
+            document.querySelectorAll('.chart-tabs .chart-tab').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            usersChart.data = getUsersChartData(view);
+            usersChart.update();
+        }
+
+        // Time Filter Functions
+        function switchTimeType(type) {
+            currentTimeType = type;
+            document.querySelectorAll('.time-type-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            // با تغییر سطح زمانی، بازه را نرمال/محدود می‌کنیم تا داده‌ها واقعاً تغییر کنند
+            applyDateFilter();
+        }
+
+        function setQuickDate(period) {
+            const today = new Date();
+            const persianDate = gregorianToPersian(today);
+            
+            switch(period) {
+                case 'today':
+                    currentStartDate = persianDate;
+                    currentEndDate = persianDate;
+                    currentTimeType = 'daily';
+                    break;
+                case 'yesterday':
+                    const yesterday = new Date(today);
+                    yesterday.setDate(yesterday.getDate() - 1);
+                    const persianYesterday = gregorianToPersian(yesterday);
+                    currentStartDate = persianYesterday;
+                    currentEndDate = persianYesterday;
+                    currentTimeType = 'daily';
+                    break;
+                case 'last7days':
+                    const last7 = new Date(today);
+                    last7.setDate(last7.getDate() - 7);
+                    currentStartDate = gregorianToPersian(last7);
+                    currentEndDate = persianDate;
+                    currentTimeType = 'daily';
+                    break;
+                case 'last30days':
+                    const last30 = new Date(today);
+                    last30.setDate(last30.getDate() - 30);
+                    currentStartDate = gregorianToPersian(last30);
+                    currentEndDate = persianDate;
+                    currentTimeType = 'daily';
+                    break;
+                case 'thisMonth':
+                    currentStartDate = `${currentYear}/${String(currentMonth).padStart(2, '0')}/01`;
+                    currentEndDate = `${currentYear}/${String(currentMonth).padStart(2, '0')}/29`;
+                    currentTimeType = 'daily';
+                    break;
+                case 'lastMonth':
+                    const lastMonth = currentMonth === 1 ? 12 : currentMonth - 1;
+                    const lastMonthYear = currentMonth === 1 ? currentYear - 1 : currentYear;
+                    currentStartDate = `${lastMonthYear}/${String(lastMonth).padStart(2, '0')}/01`;
+                    currentEndDate = `${lastMonthYear}/${String(lastMonth).padStart(2, '0')}/29`;
+                    currentTimeType = 'daily';
+                    break;
+                case 'last3months':
+                    const month3ago = currentMonth - 3;
+                    currentStartDate = month3ago > 0 ? `${currentYear}/${String(month3ago).padStart(2, '0')}/01` : `${currentYear-1}/${String(12+month3ago).padStart(2, '0')}/01`;
+                    currentEndDate = `${currentYear}/${String(currentMonth).padStart(2, '0')}/29`;
+                    currentTimeType = 'monthly';
+                    break;
+                case 'last6months':
+                    const month6ago = currentMonth - 6;
+                    currentStartDate = month6ago > 0 ? `${currentYear}/${String(month6ago).padStart(2, '0')}/01` : `${currentYear-1}/${String(12+month6ago).padStart(2, '0')}/01`;
+                    currentEndDate = `${currentYear}/${String(currentMonth).padStart(2, '0')}/29`;
+                    currentTimeType = 'monthly';
+                    break;
+                case 'thisYear':
+                    currentStartDate = `${currentYear}/01/01`;
+                    currentEndDate = `${currentYear}/12/29`;
+                    currentTimeType = 'monthly';
+                    break;
+                case 'lastYear':
+                    currentStartDate = `${currentYear-1}/01/01`;
+                    currentEndDate = `${currentYear-1}/12/29`;
+                    currentTimeType = 'monthly';
+                    break;
+            }
+            
+            document.getElementById('startDateInput').value = currentStartDate;
+            document.getElementById('endDateInput').value = currentEndDate;
+            
+            // Update active time type button
+            document.querySelectorAll('.time-type-btn').forEach(btn => btn.classList.remove('active'));
+            const typeIndex = currentTimeType === 'daily' ? 0 : currentTimeType === 'monthly' ? 1 : 2;
+            document.querySelectorAll('.time-type-btn')[typeIndex].classList.add('active');
+            
+            applyDateFilter();
+        }
+
+        function applyDateFilter() {
+            const rawStart = document.getElementById('startDateInput').value;
+            const rawEnd = document.getElementById('endDateInput').value;
+            const norm = normalizeDateRange(rawStart, rawEnd);
+
+            if (currentTimeType === 'yearly') {
+                const yr = getYearRange(norm.start, norm.end);
+                currentStartDate = `${yr.startYear}/01/01`;
+                currentEndDate = `${yr.endYear}/12/29`;
+            } else {
+                const s = clampJalali(parseJalaliDate(norm.start), DATA_MIN_DATE, DATA_MAX_DATE);
+                const e = clampJalali(parseJalaliDate(norm.end), DATA_MIN_DATE, DATA_MAX_DATE);
+                currentStartDate = formatJalaliDate(s || parseJalaliDate(DATA_MIN_DATE));
+                currentEndDate = formatJalaliDate(e || parseJalaliDate(DATA_MAX_DATE));
+            }
+
+            document.getElementById('startDateInput').value = currentStartDate;
+            document.getElementById('endDateInput').value = currentEndDate;
+            
+            updatePeriodDisplay();
+            updateAllData();
+        }
+
+        function updatePeriodDisplay() {
+            const typeText = currentTimeType === 'daily' ? 'روزانه' : currentTimeType === 'monthly' ? 'ماهانه' : 'سالانه';
+            document.getElementById('currentPeriodDisplay').innerHTML = 
+                `📊 نمایش داده‌های: ${currentStartDate} تا ${currentEndDate} (${typeText})`;
+        }
+
+        function updateAllData() {
+            updateStats();
+            updateComparison();
+            updateCharts();
+            populateTable();
+            updateMonthlyTable();
+        }
+
+        function updateCharts() {
+            // پیدا کردن تب فعال برای نمودار درآمد
+            const revenueChartContainer = document.querySelector('.charts-grid .chart-container:nth-child(1)');
+            const usersChartContainer = document.querySelector('.charts-grid .chart-container:nth-child(2)');
+            
+            const activeRevenueTab = revenueChartContainer ? revenueChartContainer.querySelector('.chart-tab.active') : null;
+            const activeUsersTab = usersChartContainer ? usersChartContainer.querySelector('.chart-tab.active') : null;
+            
+            const revenueFilter = activeRevenueTab ? 
+                (activeRevenueTab.textContent.includes('اشتراکی') ? 'subscription' : 
+                 activeRevenueTab.textContent.includes('رویدادی') ? 'ondemand' : 'all') : 'all';
+            
+            const usersFilter = activeUsersTab ? 
+                (activeUsersTab.textContent.includes('اشتراکی') ? 'subscription' : 
+                 activeUsersTab.textContent.includes('رویدادی') ? 'ondemand' : 'all') : 'all';
+            
+            if (revenueChart) {
+                revenueChart.data = getRevenueChartData(revenueFilter);
+                revenueChart.update('active');
+            }
+            if (usersChart) {
+                usersChart.data = getUsersChartData(usersFilter);
+                usersChart.update('active');
+            }
+            if (revenuePieChart) {
+                revenuePieChart.data = getRevenuePieData();
+                revenuePieChart.update('active');
+            }
+            if (churnChart) {
+                churnChart.data = getChurnChartData(currentChurnView);
+                churnChart.update('active');
+            }
+            if (winBackChart) {
+                winBackChart.data = getWinBackChartData();
+                winBackChart.update('active');
+            }
+        }
+
+        function gregorianToPersian(date) {
+            // تبدیل ساده میلادی به شمسی (تقریبی)
+            const year = date.getFullYear();
+            const month = date.getMonth() + 1;
+            const day = date.getDate();
+            
+            let persianYear = year - 621;
+            let persianMonth = month;
+            let persianDay = day;
+            
+            if (month < 3 || (month === 3 && day < 21)) {
+                persianYear--;
+                persianMonth = month + 9;
+            } else {
+                persianMonth = month - 3;
+            }
+            
+            return `${persianYear}/${String(persianMonth).padStart(2, '0')}/${String(persianDay).padStart(2, '0')}`;
+        }
+
+        // Initialize on load
+        window.addEventListener('load', () => {
+            initDashboard();
+            document.getElementById('startDateInput').value = currentStartDate;
+            document.getElementById('endDateInput').value = currentEndDate;
+            updatePeriodDisplay();
+        });
+    </script>
+</body>
+</html>
