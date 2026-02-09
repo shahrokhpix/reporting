@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>پنل CRM کارشناس</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Vazirmatn', Tahoma, sans-serif; }
+    body {
+      background: #f9fafc;
+      min-height: 100vh;
+      padding: 24px;
+      color: #2e353b;
+    }
+    .container { max-width: 1000px; margin: 0 auto; }
+    
+    /* Header */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid #e0e4e9;
+    }
+    .header h1 {
+      font-size: 20px;
+      font-weight: 700;
+      color: #509ee3;
+    }
+    .header-actions {
+      display: flex;
+      gap: 8px;
+    }
+    
+    /* Search Box */
+    .search-box {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      border: 1px solid #e0e4e9;
+    }
+    .search-row {
+      display: flex;
+      gap: 10px;
+    }
+    .search-row input {
+      flex: 1;
+      padding: 10px 14px;
+      border: 1px solid #e0e4e9;
+      border-radius: 6px;
+      font-size: 14px;
+      direction: ltr;
+      text-align: left;
+      transition: all 0.2s;
+    }
+    .search-row input:focus {
+      outline: none;
+      border-color: #509ee3;
+      box-shadow: 0 0 0 2px rgba(80,158,227,0.15);
+    }
+    .search-row input::placeholder {
+      font-family: 'Vazirmatn', Tahoma, sans-serif;
+      direction: rtl;
+    }
+    .btn {
+      padding: 10px 20px;
+      border: 1px solid #e0e4e9;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 500;
+      transition: all 0.2s;
+      background: white;
+      color: #2e353b;
+    }
+    .btn:hover {
+      background: #f9fafc;
+      border-color: #c0c6cc;
+    }
+    .btn-primary {
+      background: #509ee3;
+      color: white;
+      border-color: #509ee3;
+    }
+    .btn-primary:hover {
+      background: #4a90d1;
+      border-color: #4a90d1;
+    }
+    
+    /* Result Panel */
+    #result { display: none; }
+    
+    /* Export Bar */
+    .export-bar {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    
+    .section {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      border: 1px solid #e0e4e9;
+    }
+    .section h3 {
+      color: #509ee3;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #f0f2f5;
+      font-size: 14px;
+      font-weight: 700;
+    }
+    
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 12px;
+    }
+    .info-item {
+      background: #f9fafc;
+      padding: 12px;
+      border-radius: 6px;
+      border: 1px solid #eef0f3;
+    }
+    .info-item label {
+      display: block;
+      font-size: 11px;
+      color: #7c8590;
+      margin-bottom: 4px;
+      font-weight: 500;
+    }
+    .info-item span {
+      font-size: 13px;
+      font-weight: 600;
+      color: #2e353b;
+    }
+    
+    /* Status Colors */
+    .status-active { color: #84bb4c !important; }
+    .status-expired { color: #ed6e6e !important; }
+    .status-pending { color: #f9a825 !important; }
+    .status-canceled { color: #7c8590 !important; }
+    
+    /* Payment Timeline */
+    .timeline-label {
+      margin-top: 16px;
+      font-size: 12px;
+      color: #7c8590;
+      margin-bottom: 10px;
+      font-weight: 500;
+    }
+    .payment-timeline {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .installment {
+      width: 36px;
+      height: 36px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .installment.paid { background: #84bb4c; }
+    .installment.pending { background: #f9a825; }
+    .installment.failed { background: #ed6e6e; }
+    .installment.future { background: #509ee3; }
+    
+    .timeline-legend {
+      display: flex;
+      gap: 16px;
+      margin-top: 12px;
+      flex-wrap: wrap;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      color: #7c8590;
+    }
+    .legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 3px;
+    }
+    .legend-dot.paid { background: #84bb4c; }
+    .legend-dot.pending { background: #f9a825; }
+    .legend-dot.failed { background: #ed6e6e; }
+    .legend-dot.future { background: #509ee3; }
+    
+    /* Actions */
+    .actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    
+    /* History Table */
+    .table-wrapper {
+      overflow-x: auto;
+      border-radius: 6px;
+      border: 1px solid #e0e4e9;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    th, td {
+      padding: 12px 14px;
+      text-align: right;
+    }
+    th { 
+      background: #f9fafc;
+      color: #7c8590;
+      font-weight: 600;
+      font-size: 11px;
+      text-transform: uppercase;
+      border-bottom: 1px solid #e0e4e9;
+    }
+    td {
+      border-bottom: 1px solid #f0f2f5;
+      color: #2e353b;
+    }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: #f9fafc; }
+    
+    /* Error Message */
+    .error-box {
+      background: #fef6f6;
+      border: 1px solid #f5c6c6;
+      border-radius: 6px;
+      padding: 14px;
+      text-align: center;
+      color: #ed6e6e;
+      margin-bottom: 16px;
+      display: none;
+      font-size: 13px;
+    }
+    
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #2e353b;
+      color: white;
+      padding: 12px 24px;
+      border-radius: 6px;
+      display: none;
+      font-size: 13px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      z-index: 1000;
+    }
+    
+    /* Print Styles */
+    @media print {
+      body { background: white; padding: 0; }
+      .header-actions, .export-bar, .actions, .search-box { display: none !important; }
+      .section { border: 1px solid #ddd; box-shadow: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <div class="header">
+      <h1>پنل CRM کارشناس</h1>
+      <div class="header-actions">
+        <button class="btn" onclick="showToast('در حال توسعه')">راهنما</button>
+      </div>
+    </div>
+    
+    <!-- Search -->
+    <div class="search-box">
+      <div class="search-row">
+        <input type="text" id="phoneInput" placeholder="شماره موبایل را وارد کنید" maxlength="11">
+        <button class="btn btn-primary" onclick="search()">جستجو</button>
+      </div>
+    </div>
+    
+    <!-- Error -->
+    <div class="error-box" id="errorBox"></div>
+    
+    <!-- Results -->
+    <div id="result">
+      <!-- Export Bar -->
+      <div class="export-bar">
+        <button class="btn" onclick="showToast('خروجی اکسل آماده شد')">خروجی Excel</button>
+        <button class="btn" onclick="window.print()">چاپ</button>
+      </div>
+      
+      <!-- Service Info -->
+      <div class="section">
+        <h3>اطلاعات سرویس</h3>
+        <div class="info-grid" id="serviceInfo"></div>
+      </div>
+      
+      <!-- Subscriber Info -->
+      <div class="section">
+        <h3>اطلاعات مشترک</h3>
+        <div class="info-grid" id="subscriberInfo"></div>
+      </div>
+      
+      <!-- Payment Info -->
+      <div class="section">
+        <h3>اطلاعات پرداخت</h3>
+        <div class="info-grid" id="paymentInfo"></div>
+        <p class="timeline-label">وضعیت اقساط:</p>
+        <div class="payment-timeline" id="installments"></div>
+        <div class="timeline-legend">
+          <div class="legend-item"><span class="legend-dot paid"></span> پرداخت شده</div>
+          <div class="legend-item"><span class="legend-dot pending"></span> در انتظار</div>
+          <div class="legend-item"><span class="legend-dot failed"></span> ناموفق</div>
+          <div class="legend-item"><span class="legend-dot future"></span> سررسید نشده</div>
+        </div>
+      </div>
+      
+      <!-- History -->
+      <div class="section">
+        <h3>تاریخچه تعامل</h3>
+        <div class="table-wrapper">
+          <table id="historyTable">
+            <thead>
+              <tr><th>تاریخ</th><th>نوع</th><th>شرح</th></tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+      
+      <!-- Actions -->
+      <div class="section">
+        <h3>اقدامات کارشناس</h3>
+        <div class="actions">
+          <button class="btn" onclick="showToast('لینک دانلود بیمه‌نامه ارسال شد')">ارسال لینک بیمه‌نامه</button>
+          <button class="btn" onclick="showToast('لینک پرداخت ارسال شد')">ارسال لینک پرداخت</button>
+          <button class="btn" onclick="showToast('درخواست تسویه ثبت شد')">درخواست تسویه</button>
+          <button class="btn" onclick="showToast('تیکت ارجاع ثبت شد')">تیکت ارجاع به شریک</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // تولید داده رندوم برای هر شماره ایرانی
+    function generateRandomData(phone) {
+      const rand = (arr) => arr[Math.floor(Math.random() * arr.length)];
+      const randNum = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+      const formatPrice = (n) => n.toLocaleString('fa-IR');
+      
+      const statuses = [
+        { text: 'فعال', class: 'status-active' },
+        { text: 'منقضی شده', class: 'status-expired' },
+        { text: 'در انتظار پرداخت', class: 'status-pending' },
+        { text: 'لغو شده', class: 'status-canceled' }
+      ];
+      const coverages = ['طلایی', 'نقره‌ای', 'برنزی', 'ویژه'];
+      const paymentTypes = ['DCB', 'IPG'];
+      const subTypes = ['دائمی', 'اعتباری'];
+      const simStatuses = ['عادی', 'مسدود', 'قطع یک‌طرفه', 'قطع دوطرفه'];
+      const creditScores = ['کم', 'متوسط', 'زیاد'];
+      const channels = ['ussd', 'my-mci', 'sms', 'other'];
+      const msgTypes = ['پیام MT', 'پیام MO', 'پرداخت', 'سیستم', 'تماس'];
+      const msgDescs = [
+        'یادآوری پرداخت قسط',
+        'پرداخت قسط - موفق',
+        'پرداخت قسط - ناموفق',
+        'استعلام وضعیت بیمه',
+        'درخواست لغو سرویس',
+        'تمدید سرویس',
+        'تغییر پوشش بیمه',
+        'ارسال لینک پرداخت',
+        'تماس با پشتیبانی'
+      ];
+      
+      const status = rand(statuses);
+      const paymentType = rand(paymentTypes);
+      const installmentCount = randNum(3, 12);
+      const paidCount = randNum(1, installmentCount);
+      const totalPrice = randNum(1, 10) * 500000;
+      const paidAmount = Math.floor(totalPrice * paidCount / installmentCount);
+      
+      // تولید وضعیت اقساط
+      const installments = [];
+      for (let i = 0; i < installmentCount; i++) {
+        if (i < paidCount - 1) installments.push('paid');
+        else if (i === paidCount - 1) installments.push(rand(['paid', 'paid', 'paid', 'failed']));
+        else if (i === paidCount) installments.push('pending');
+        else installments.push('future');
+      }
+      
+      // تولید IMEI رندوم
+      const imei = Array(15).fill(0).map(() => randNum(0, 9)).join('');
+      
+      // تولید تاریخ رندوم
+      const randDate = () => `1404/${String(randNum(1, 12)).padStart(2, '0')}/${String(randNum(1, 28)).padStart(2, '0')}`;
+      
+      // تولید تاریخچه
+      const history = [];
+      for (let i = 0; i < randNum(3, 7); i++) {
+        history.push({
+          date: randDate(),
+          type: rand(msgTypes),
+          desc: rand(msgDescs)
+        });
+      }
+      history.sort((a, b) => b.date.localeCompare(a.date));
+      
+      return {
+        service: {
+          msisdn: phone,
+          serviceId: `SRV-${randNum(10000, 99999)}`,
+          imei: imei,
+          insuranceNo: `INS-2024-${randNum(10000, 99999)}`,
+          status: status.text,
+          statusClass: status.class,
+          coverage: rand(coverages),
+          expiry: `1405/${String(randNum(1, 12)).padStart(2, '0')}/${String(randNum(1, 28)).padStart(2, '0')}`,
+          paymentType: paymentType,
+          partner: 'ibimeh'
+        },
+        subscriber: {
+          type: rand(subTypes),
+          simStatus: rand(simStatuses),
+          creditScore: rand(creditScores),
+          installmentEligible: rand(['بله', 'خیر']),
+          activeInsurance: status.text === 'فعال' ? `بیمه موبایل ${rand(coverages)}` : '-',
+          activationDate: randDate(),
+          activationChannel: rand(channels),
+          imei: imei,
+          autoRenew: rand(['فعال', 'غیرفعال'])
+        },
+        payment: {
+          totalPrice: formatPrice(totalPrice),
+          paidAmount: formatPrice(paidAmount),
+          dueAmount: formatPrice(totalPrice - paidAmount),
+          nextDueDate: paidCount < installmentCount ? `1404/${String(randNum(1, 12)).padStart(2, '0')}/${String(randNum(1, 28)).padStart(2, '0')}` : '-',
+          nextAmount: paidCount < installmentCount ? formatPrice(Math.floor(totalPrice / installmentCount)) : '-',
+          installments: installments
+        },
+        history: history
+      };
+    }
+    
+    // اعتبارسنجی شماره موبایل ایران
+    function isValidIranianMobile(phone) {
+      return /^09[0-9]{9}$/.test(phone);
+    }
+
+    function search() {
+      const phone = document.getElementById('phoneInput').value.trim();
+      const errorBox = document.getElementById('errorBox');
+      const resultBox = document.getElementById('result');
+      
+      errorBox.style.display = 'none';
+      resultBox.style.display = 'none';
+      
+      if (!phone) {
+        errorBox.textContent = 'لطفا شماره موبایل را وارد کنید';
+        errorBox.style.display = 'block';
+        return;
+      }
+      
+      if (!isValidIranianMobile(phone)) {
+        errorBox.textContent = 'شماره موبایل نامعتبر است. فرمت صحیح: 09XXXXXXXXX';
+        errorBox.style.display = 'block';
+        return;
+      }
+      
+      // تولید داده رندوم برای این شماره
+      const data = generateRandomData(phone);
+      
+      // Service Info
+      document.getElementById('serviceInfo').innerHTML = `
+        <div class="info-item"><label>MSISDN</label><span>${data.service.msisdn}</span></div>
+        <div class="info-item"><label>Service ID</label><span>${data.service.serviceId}</span></div>
+        <div class="info-item"><label>IMEI</label><span>${data.service.imei}</span></div>
+        <div class="info-item"><label>شماره بیمه‌نامه</label><span>${data.service.insuranceNo}</span></div>
+        <div class="info-item"><label>وضعیت سرویس</label><span class="${data.service.statusClass}">${data.service.status}</span></div>
+        <div class="info-item"><label>سطح پوشش</label><span>${data.service.coverage}</span></div>
+        <div class="info-item"><label>تاریخ انقضا</label><span>${data.service.expiry}</span></div>
+        <div class="info-item"><label>مدل پرداخت</label><span>${data.service.paymentType}</span></div>
+        <div class="info-item"><label>همکار پشتیبانی</label><span>${data.service.partner}</span></div>
+      `;
+      
+      // Subscriber Info
+      document.getElementById('subscriberInfo').innerHTML = `
+        <div class="info-item"><label>نوع مشترک</label><span>${data.subscriber.type}</span></div>
+        <div class="info-item"><label>وضعیت سیم‌کارت</label><span>${data.subscriber.simStatus}</span></div>
+        <div class="info-item"><label>امتیاز اعتبار</label><span>${data.subscriber.creditScore}</span></div>
+        <div class="info-item"><label>واجد شرایط اقساط</label><span>${data.subscriber.installmentEligible}</span></div>
+        <div class="info-item"><label>بیمه فعال</label><span>${data.subscriber.activeInsurance}</span></div>
+        <div class="info-item"><label>تاریخ فعالسازی</label><span>${data.subscriber.activationDate}</span></div>
+        <div class="info-item"><label>کانال فعالسازی</label><span>${data.subscriber.activationChannel}</span></div>
+        <div class="info-item"><label>تمدید خودکار</label><span>${data.subscriber.autoRenew}</span></div>
+      `;
+      
+      // Payment Info
+      document.getElementById('paymentInfo').innerHTML = `
+        <div class="info-item"><label>کل هزینه خدمات</label><span>${data.payment.totalPrice} ریال</span></div>
+        <div class="info-item"><label>پرداخت شده</label><span>${data.payment.paidAmount} ریال</span></div>
+        <div class="info-item"><label>مبلغ معوق</label><span>${data.payment.dueAmount} ریال</span></div>
+        <div class="info-item"><label>سررسید قسط بعد</label><span>${data.payment.nextDueDate}</span></div>
+        <div class="info-item"><label>مبلغ قسط بعدی</label><span>${data.payment.nextAmount} ریال</span></div>
+      `;
+      
+      // Installments Timeline
+      document.getElementById('installments').innerHTML = data.payment.installments.map((s, i) => 
+        `<div class="installment ${s}">${i + 1}</div>`
+      ).join('');
+      
+      // History
+      document.querySelector('#historyTable tbody').innerHTML = data.history.map(h => 
+        `<tr><td>${h.date}</td><td>${h.type}</td><td>${h.desc}</td></tr>`
+      ).join('');
+      
+      resultBox.style.display = 'block';
+      resultBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    
+    // Toast notification
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.style.display = 'block';
+      setTimeout(() => { toast.style.display = 'none'; }, 2500);
+    }
+    
+    // Enter key support
+    document.getElementById('phoneInput').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') search();
+    });
+  </script>
+</body>
+</html>
