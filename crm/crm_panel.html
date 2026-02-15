@@ -1,0 +1,1117 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>پنل CRM کارشناس</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Vazirmatn', Tahoma, sans-serif; }
+    body {
+      background: #f9fafc;
+      min-height: 100vh;
+      padding: 24px;
+      color: #2e353b;
+    }
+    .container { max-width: 1000px; margin: 0 auto; }
+    
+    /* Header */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid #e0e4e9;
+    }
+    .header h1 {
+      font-size: 20px;
+      font-weight: 700;
+      color: #509ee3;
+    }
+    .header-actions {
+      display: flex;
+      gap: 8px;
+    }
+    
+    /* Search Box */
+    .search-box {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      border: 1px solid #e0e4e9;
+    }
+    .search-row {
+      display: flex;
+      gap: 10px;
+    }
+    .search-row input {
+      flex: 1;
+      padding: 10px 14px;
+      border: 1px solid #e0e4e9;
+      border-radius: 6px;
+      font-size: 14px;
+      direction: ltr;
+      text-align: left;
+      transition: all 0.2s;
+    }
+    .search-row input:focus {
+      outline: none;
+      border-color: #509ee3;
+      box-shadow: 0 0 0 2px rgba(80,158,227,0.15);
+    }
+    .search-row input::placeholder {
+      font-family: 'Vazirmatn', Tahoma, sans-serif;
+      direction: rtl;
+    }
+    .btn {
+      padding: 10px 20px;
+      border: 1px solid #e0e4e9;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 500;
+      transition: all 0.2s;
+      background: white;
+      color: #2e353b;
+    }
+    .btn:hover {
+      background: #f9fafc;
+      border-color: #c0c6cc;
+    }
+    .btn-primary {
+      background: #509ee3;
+      color: white;
+      border-color: #509ee3;
+    }
+    .btn-primary:hover {
+      background: #4a90d1;
+      border-color: #4a90d1;
+    }
+    .btn-small {
+      padding: 6px 14px;
+      font-size: 12px;
+    }
+    .btn-success {
+      background: #84bb4c;
+      color: white;
+      border-color: #84bb4c;
+    }
+    .btn-success:hover {
+      background: #75a943;
+      border-color: #75a943;
+    }
+    .btn-back {
+      background: #7c8590;
+      color: white;
+      border-color: #7c8590;
+    }
+    .btn-back:hover {
+      background: #6c757d;
+      border-color: #6c757d;
+    }
+    
+    /* Result Panel */
+    #result { display: none; }
+    #serviceDetails { display: none; }
+    
+    /* Back Button */
+    .back-button {
+      margin-bottom: 16px;
+    }
+    
+    /* Export Bar */
+    .export-bar {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    
+    /* Service Cards Grid */
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    
+    .service-card {
+      background: white;
+      border: 1px solid #e0e4e9;
+      border-radius: 8px;
+      padding: 20px;
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+    
+    .service-card:hover {
+      border-color: #509ee3;
+      box-shadow: 0 4px 12px rgba(80,158,227,0.15);
+      transform: translateY(-2px);
+    }
+    
+    .service-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid #f0f2f5;
+    }
+    
+    .service-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+    
+    .service-icon.insurance { background: #e3f2fd; }
+    .service-icon.ai { background: #f3e5f5; }
+    .service-icon.audiobook { background: #fff3e0; }
+    .service-icon.vod { background: #fce4ec; }
+    
+    .service-title {
+      flex: 1;
+    }
+    
+    .service-title h4 {
+      font-size: 15px;
+      font-weight: 700;
+      color: #2e353b;
+      margin-bottom: 4px;
+    }
+    
+    .service-title p {
+      font-size: 11px;
+      color: #7c8590;
+    }
+    
+    .service-info {
+      margin-bottom: 14px;
+    }
+    
+    .service-info-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      font-size: 12px;
+    }
+    
+    .service-info-row label {
+      color: #7c8590;
+    }
+    
+    .service-info-row span {
+      color: #2e353b;
+      font-weight: 600;
+    }
+    
+    .service-actions {
+      display: flex;
+      gap: 8px;
+    }
+    
+    .badge-demo {
+      display: inline-block;
+      background: #f9a825;
+      color: white;
+      font-size: 10px;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+    
+    .section {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      border: 1px solid #e0e4e9;
+    }
+    .section h3 {
+      color: #509ee3;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #f0f2f5;
+      font-size: 14px;
+      font-weight: 700;
+    }
+    
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 12px;
+    }
+    .info-item {
+      background: #f9fafc;
+      padding: 12px;
+      border-radius: 6px;
+      border: 1px solid #eef0f3;
+    }
+    .info-item label {
+      display: block;
+      font-size: 11px;
+      color: #7c8590;
+      margin-bottom: 4px;
+      font-weight: 500;
+    }
+    .info-item span {
+      font-size: 13px;
+      font-weight: 600;
+      color: #2e353b;
+    }
+    
+    /* Status Colors */
+    .status-active { color: #84bb4c !important; }
+    .status-expired { color: #ed6e6e !important; }
+    .status-pending { color: #f9a825 !important; }
+    .status-canceled { color: #7c8590 !important; }
+    
+    /* Payment Timeline */
+    .timeline-label {
+      margin-top: 16px;
+      font-size: 12px;
+      color: #7c8590;
+      margin-bottom: 10px;
+      font-weight: 500;
+    }
+    .payment-timeline {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .installment {
+      width: 36px;
+      height: 36px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .installment.paid { background: #84bb4c; }
+    .installment.pending { background: #f9a825; }
+    .installment.failed { background: #ed6e6e; }
+    .installment.future { background: #509ee3; }
+    
+    .timeline-legend {
+      display: flex;
+      gap: 16px;
+      margin-top: 12px;
+      flex-wrap: wrap;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      color: #7c8590;
+    }
+    .legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 3px;
+    }
+    .legend-dot.paid { background: #84bb4c; }
+    .legend-dot.pending { background: #f9a825; }
+    .legend-dot.failed { background: #ed6e6e; }
+    .legend-dot.future { background: #509ee3; }
+    
+    /* Actions */
+    .actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    
+    /* History Table */
+    .table-wrapper {
+      overflow-x: auto;
+      border-radius: 6px;
+      border: 1px solid #e0e4e9;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    th, td {
+      padding: 12px 14px;
+      text-align: right;
+    }
+    th { 
+      background: #f9fafc;
+      color: #7c8590;
+      font-weight: 600;
+      font-size: 11px;
+      text-transform: uppercase;
+      border-bottom: 1px solid #e0e4e9;
+    }
+    td {
+      border-bottom: 1px solid #f0f2f5;
+      color: #2e353b;
+    }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: #f9fafc; }
+    
+    /* Error Message */
+    .error-box {
+      background: #fef6f6;
+      border: 1px solid #f5c6c6;
+      border-radius: 6px;
+      padding: 14px;
+      text-align: center;
+      color: #ed6e6e;
+      margin-bottom: 16px;
+      display: none;
+      font-size: 13px;
+    }
+    
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #2e353b;
+      color: white;
+      padding: 12px 24px;
+      border-radius: 6px;
+      display: none;
+      font-size: 13px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      z-index: 1000;
+    }
+    
+    /* Print Styles */
+    @media print {
+      body { background: white; padding: 0; }
+      .header-actions, .export-bar, .actions, .search-box, .back-button, .service-actions { display: none !important; }
+      .section { border: 1px solid #ddd; box-shadow: none; }
+      .service-card { break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <div class="header">
+      <h1>پنل CRM کارشناس</h1>
+      <div class="header-actions">
+        <button class="btn" onclick="showToast('در حال توسعه')">راهنما</button>
+      </div>
+    </div>
+    
+    <!-- Search -->
+    <div class="search-box">
+      <div class="search-row">
+        <input type="text" id="phoneInput" placeholder="شماره موبایل را وارد کنید" maxlength="11">
+        <button class="btn btn-primary" onclick="search()">جستجو</button>
+      </div>
+    </div>
+    
+    <!-- Error -->
+    <div class="error-box" id="errorBox"></div>
+    
+    <!-- Results - Layer 1: Overview & Services List -->
+    <div id="result">
+      <!-- Subscriber Overview -->
+      <div class="section">
+        <h3>اطلاعات کلی مشترک</h3>
+        <div class="info-grid" id="subscriberOverview"></div>
+      </div>
+      
+      <!-- Active Services -->
+      <div class="section">
+        <h3>سرویس‌های فعال</h3>
+        <div class="services-grid" id="servicesGrid"></div>
+      </div>
+    </div>
+    
+    <!-- Layer 2: Service Details (Insurance) -->
+    <div id="serviceDetails">
+      <div class="back-button">
+        <button class="btn btn-back" onclick="backToOverview()">← بازگشت به لیست سرویس‌ها</button>
+      </div>
+      
+      <!-- Export Bar -->
+      <div class="export-bar">
+        <button class="btn" onclick="showToast('خروجی اکسل آماده شد')">خروجی Excel</button>
+        <button class="btn" onclick="window.print()">چاپ</button>
+      </div>
+      
+      <!-- Policy Info -->
+      <div class="section">
+        <h3>📋 اطلاعات بیمه‌نامه</h3>
+        <div class="info-grid" id="policyInfo"></div>
+      </div>
+      
+      <!-- Device Info -->
+      <div class="section">
+        <h3>📱 اطلاعات دستگاه بیمه‌شده</h3>
+        <div class="info-grid" id="deviceInfo"></div>
+      </div>
+      
+      <!-- Coverage Info -->
+      <div class="section">
+        <h3>🛡️ پوشش‌های بیمه</h3>
+        <div class="info-grid" id="coverageInfo"></div>
+      </div>
+      
+      <!-- Insured Info -->
+      <div class="section">
+        <h3>👤 اطلاعات بیمه‌گذار</h3>
+        <div class="info-grid" id="insuredInfo"></div>
+      </div>
+      
+      <!-- Payment Info -->
+      <div class="section">
+        <h3>💳 اطلاعات مالی و پرداخت</h3>
+        <div class="info-grid" id="paymentInfo"></div>
+        <p class="timeline-label">وضعیت اقساط:</p>
+        <div class="payment-timeline" id="installments"></div>
+        <div class="timeline-legend">
+          <div class="legend-item"><span class="legend-dot paid"></span> پرداخت شده</div>
+          <div class="legend-item"><span class="legend-dot pending"></span> در انتظار</div>
+          <div class="legend-item"><span class="legend-dot failed"></span> ناموفق</div>
+          <div class="legend-item"><span class="legend-dot future"></span> سررسید نشده</div>
+        </div>
+      </div>
+      
+      <!-- Claims History -->
+      <div class="section" id="claimsSection" style="display: none;">
+        <h3>🔧 تاریخچه خسارات</h3>
+        <div class="table-wrapper">
+          <table id="claimsTable">
+            <thead>
+              <tr><th>شماره پرونده</th><th>تاریخ</th><th>نوع خسارت</th><th>مبلغ</th><th>فرانشیز</th><th>قابل پرداخت</th><th>وضعیت</th></tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+      
+      <!-- Subscriber Info -->
+      <div class="section">
+        <h3>📞 اطلاعات خط موبایل</h3>
+        <div class="info-grid" id="subscriberInfo"></div>
+      </div>
+      
+      <!-- History -->
+      <div class="section">
+        <h3>📜 تاریخچه تعامل</h3>
+        <div class="table-wrapper">
+          <table id="historyTable">
+            <thead>
+              <tr><th>تاریخ</th><th>نوع</th><th>شرح</th></tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+      
+      <!-- Documents -->
+      <div class="section">
+        <h3>📄 اسناد و مدارک</h3>
+        <div class="table-wrapper">
+          <table id="documentsTable">
+            <thead>
+              <tr><th>نام سند</th><th>وضعیت</th><th>فرمت</th><th>عملیات</th></tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+      
+      <!-- Actions -->
+      <div class="section">
+        <h3>⚡ اقدامات کارشناس</h3>
+        <div class="actions">
+          <button class="btn btn-success" onclick="showToast('لینک دانلود بیمه‌نامه ارسال شد')">📥 ارسال بیمه‌نامه</button>
+          <button class="btn btn-primary" onclick="showToast('لینک پرداخت ارسال شد')">💳 ارسال لینک پرداخت</button>
+          <button class="btn" onclick="showToast('گزارش سرقت ثبت شد')">🚨 ثبت گزارش سرقت</button>
+          <button class="btn" onclick="showToast('درخواست تمدید ثبت شد')">🔄 تمدید بیمه‌نامه</button>
+          <button class="btn" onclick="showToast('درخواست لغو ثبت شد')">❌ لغو بیمه‌نامه</button>
+          <button class="btn" onclick="showToast('تیکت ارجاع ثبت شد')">📨 ارجاع به بیمه‌گر</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script>
+    let currentUserData = null;
+    
+    // تولید داده رندوم برای چند سرویس
+    function generateUserServices(phone) {
+      const rand = (arr) => arr[Math.floor(Math.random() * arr.length)];
+      const randNum = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+      const formatPrice = (n) => n.toLocaleString('fa-IR');
+      const randDate = () => `1404/${String(randNum(1, 12)).padStart(2, '0')}/${String(randNum(1, 28)).padStart(2, '0')}`;
+      
+      const services = [];
+      
+      // 1. بیمه موبایل (با جزئیات کامل) - همیشه فعال
+      const statuses = [
+          { text: 'فعال', class: 'status-active' },
+          { text: 'منقضی شده', class: 'status-expired' },
+          { text: 'در انتظار پرداخت', class: 'status-pending' }
+        ];
+        const coverages = ['طرح اول', 'طرح دوم', 'طرح سوم', 'طرح چهارم', 'طرح پنجم'];
+        const brands = ['Samsung', 'Apple', 'Xiaomi', 'Huawei', 'Nokia'];
+        const models = {
+          Samsung: ['Galaxy S23', 'Galaxy A54', 'Galaxy Z Fold 5', 'Galaxy A34'],
+          Apple: ['iPhone 15 Pro', 'iPhone 14', 'iPhone 13', 'iPhone 15'],
+          Xiaomi: ['Redmi Note 13', 'Poco X6', 'Mi 13', '14 Pro'],
+          Huawei: ['P60 Pro', 'Nova 11', 'Mate 50', 'P50'],
+          Nokia: ['G60', 'X30', 'G21', 'C31']
+        };
+        const colors = ['مشکی', 'سفید', 'آبی', 'طلایی', 'نقره‌ای', 'قرمز'];
+        const names = ['علی احمدی', 'محمد حسینی', 'رضا کریمی', 'فاطمه رضایی', 'مریم محمدی', 'سارا نوری'];
+        const cities = ['تهران', 'مشهد', 'اصفهان', 'شیراز', 'تبریز', 'کرج'];
+        
+        const status = rand(statuses);
+        const coverage = rand(coverages);
+        const brand = rand(brands);
+        const model = rand(models[brand]);
+        // انتخاب نوع پرداخت - بیشتر کاربران DCB هستند
+        const isIpg = Math.random() < 0.2; // حدود 20% IPG و 80% DCB
+        const installmentCount = isIpg ? 1 : 12;
+        
+        // تولید تاریخ‌های منطقی
+        const issueMonth = randNum(1, 12);
+        const issueDay = randNum(1, 28);
+        const issueDate = `1403/${String(issueMonth).padStart(2, '0')}/${String(issueDay).padStart(2, '0')}`;
+        const startDate = issueDate;
+        const endMonth = issueMonth;
+        const endYear = 1404;
+        const endDate = `${endYear}/${String(endMonth).padStart(2, '0')}/${String(issueDay).padStart(2, '0')}`;
+        const purchaseDate = `1403/${String(Math.max(1, issueMonth - 2)).padStart(2, '0')}/${String(randNum(1, 28)).padStart(2, '0')}`;
+        
+        const imei = Array(15).fill(0).map(() => randNum(0, 9)).join('');
+        // سقف قیمت گوشی: حداکثر 30 میلیون تومان
+        const deviceValue = randNum(5, 30) * 10000000; // ریال (5 تا 30 میلیون تومان)
+
+        // تنظیم منطقی درصد پوشش و قیمت‌گذاری بر اساس ارزش دستگاه
+        const planConfig = {
+          'طرح اول': { monthlyInstallmentToman: 5000, franchise: '10%', waitingPeriod: '72 ساعت', documentRequired: 'اصل گزارش کلانتری سرقت + کارت ملی + فاکتور خرید/IMEI', conditions: 'پوشش سرقت پایه' },
+          'طرح دوم': { monthlyInstallmentToman: 10000, franchise: '10%', waitingPeriod: '72 ساعت', documentRequired: 'اصل گزارش کلانتری سرقت + کارت ملی + فاکتور خرید/IMEI + نامه مسدودی سیم‌کارت', conditions: 'پوشش سرقت استاندارد' },
+          'طرح سوم': { monthlyInstallmentToman: 15000, franchise: '10%', waitingPeriod: '72 ساعت', documentRequired: 'اصل گزارش کلانتری سرقت + کارت ملی + فاکتور خرید/IMEI + نامه مسدودی سیم‌کارت', conditions: 'پوشش کامل سرقت' },
+          'طرح چهارم': { monthlyInstallmentToman: 20000, franchise: '10%', waitingPeriod: '72 ساعت', documentRequired: 'اصل گزارش کلانتری سرقت + کارت ملی + نامه مسدودی سیم‌کارت', conditions: 'پوشش فوری سرقت' },
+          'طرح پنجم': { monthlyInstallmentToman: 25000, franchise: '10%', waitingPeriod: '72 ساعت', documentRequired: 'اصل گزارش کلانتری سرقت + کارت ملی + نامه مسدودی سیم‌کارت + استعلام رجیستری', conditions: 'پوشش ویژه سرقت با اولویت رسیدگی' }
+        };
+        const plan = planConfig[coverage];
+        const coveragePercent = 0.9; // سقف پوشش ثابت: 90%
+        const maxCoverageAmount = Math.floor(deviceValue * coveragePercent);
+        const monthlyInstallmentToman = plan.monthlyInstallmentToman;
+        const totalPriceToman = monthlyInstallmentToman * 12;
+
+        // وضعیت پرداخت: DCB اقساطی / IPG یکجا
+        let paidCount;
+        if (isIpg) {
+          paidCount = (status.text === 'در انتظار پرداخت') ? 0 : 1;
+        } else {
+          paidCount = status.text === 'منقضی شده'
+            ? installmentCount
+            : status.text === 'در انتظار پرداخت'
+              ? randNum(0, 10)
+              : randNum(1, 11);
+        }
+        const paidAmountToman = isIpg
+          ? (paidCount === 1 ? totalPriceToman : 0)
+          : monthlyInstallmentToman * paidCount;
+        
+        const installments = [];
+        for (let i = 0; i < installmentCount; i++) {
+          if (i < paidCount) installments.push('paid');
+          else if (i === paidCount && status.text !== 'منقضی شده') installments.push('pending');
+          else installments.push('future');
+        }
+        
+        // تولید خسارات سرقت (در صورت وجود)
+        const claimsCount = Math.random() > 0.85 ? 1 : 0; // سرقت نادر است
+        const claims = [];
+        if (claimsCount > 0) {
+          const claimStatuses = [
+            { text: 'در حال بررسی', class: 'status-pending' },
+            { text: 'تایید شده - منتظر پرداخت', class: 'status-active' },
+            { text: 'پرداخت شده', class: 'status-active' },
+            { text: 'رد شده', class: 'status-expired' }
+          ];
+          
+          const claimStatus = rand(claimStatuses);
+          const claimMonth = randNum(1, 12);
+          const claimAmount = maxCoverageAmount;
+          const franchisePercent = coverage === 'طرح پنجم' ? 0.05 : coverage === 'طرح چهارم' ? 0.07 : coverage === 'طرح سوم' ? 0.10 : coverage === 'طرح دوم' ? 0.12 : 0.15;
+          const franchise = Math.floor(claimAmount * franchisePercent);
+          const payableAmount = claimAmount - franchise;
+          
+          claims.push({
+            claimNo: `THEFT-${randNum(1000, 9999)}`,
+            date: `1403/${String(claimMonth).padStart(2, '0')}/${String(randNum(1, 28)).padStart(2, '0')}`,
+            type: 'سرقت دستگاه موبایل',
+            amount: formatPrice(claimAmount),
+            franchise: formatPrice(franchise),
+            payable: formatPrice(payableAmount),
+            status: claimStatus.text,
+            statusClass: claimStatus.class,
+            policeReportNo: `POL-${randNum(100000, 999999)}`,
+            reportDate: `1403/${String(claimMonth).padStart(2, '0')}/${String(randNum(1, 28)).padStart(2, '0')}`
+          });
+        }
+
+        // محاسبه پوشش‌های سرقت (با توجه به وضعیت بیمه‌نامه)
+        const coverageDetails = {
+          'طرح اول': {
+            theftCoverage: '90% ارزش دستگاه',
+            maxCoverage: formatPrice(Math.floor(deviceValue * 0.9)),
+            franchise: planConfig['طرح اول'].franchise,
+            conditions: planConfig['طرح اول'].conditions,
+            waitingPeriod: planConfig['طرح اول'].waitingPeriod,
+            documentRequired: planConfig['طرح اول'].documentRequired
+          },
+          'طرح دوم': {
+            theftCoverage: '90% ارزش دستگاه',
+            maxCoverage: formatPrice(Math.floor(deviceValue * 0.9)),
+            franchise: planConfig['طرح دوم'].franchise,
+            conditions: planConfig['طرح دوم'].conditions,
+            waitingPeriod: planConfig['طرح دوم'].waitingPeriod,
+            documentRequired: planConfig['طرح دوم'].documentRequired
+          },
+          'طرح سوم': {
+            theftCoverage: '90% ارزش دستگاه',
+            maxCoverage: formatPrice(Math.floor(deviceValue * 0.9)),
+            franchise: planConfig['طرح سوم'].franchise,
+            conditions: planConfig['طرح سوم'].conditions,
+            waitingPeriod: planConfig['طرح سوم'].waitingPeriod,
+            documentRequired: planConfig['طرح سوم'].documentRequired
+          },
+          'طرح چهارم': {
+            theftCoverage: '90% ارزش دستگاه',
+            maxCoverage: formatPrice(Math.floor(deviceValue * 0.9)),
+            franchise: planConfig['طرح چهارم'].franchise,
+            conditions: planConfig['طرح چهارم'].conditions,
+            waitingPeriod: planConfig['طرح چهارم'].waitingPeriod,
+            documentRequired: planConfig['طرح چهارم'].documentRequired
+          },
+          'طرح پنجم': {
+            theftCoverage: '90% ارزش دستگاه',
+            maxCoverage: formatPrice(Math.floor(deviceValue * 0.9)),
+            franchise: planConfig['طرح پنجم'].franchise,
+            conditions: planConfig['طرح پنجم'].conditions,
+            waitingPeriod: planConfig['طرح پنجم'].waitingPeriod,
+            documentRequired: planConfig['طرح پنجم'].documentRequired
+          }
+        };
+        
+        const insuredCity = rand(cities);
+
+        services.push({
+          id: 'insurance',
+          type: 'بیمه موبایل',
+          name: `بیمه ${coverage}`,
+          icon: '🛡️',
+          status: status.text,
+          statusClass: status.class,
+          expiry: endDate,
+          price: `${formatPrice(monthlyInstallmentToman)} تومان/ماه`,
+          hasDetails: true,
+          details: {
+            policy: {
+              policyNo: `INS-2024-${randNum(10000, 99999)}`,
+              issueDate: issueDate,
+              startDate: startDate,
+              endDate: endDate,
+              status: status.text,
+              statusClass: status.class,
+              coverage: coverage,
+              insuranceType: 'بیمه سرقت دستگاه موبایل',
+              insurer: 'iBimeh - همکاری با همراه اول',
+              policyDuration: '12 ماه',
+              autoRenew: rand(['فعال', 'غیرفعال'])
+            },
+            device: {
+              brand: brand,
+              model: model,
+              imei: imei,
+              color: rand(colors),
+              purchaseDate: purchaseDate,
+              deviceValue: formatPrice(deviceValue),
+              condition: rand(['نو', 'کارکرده', 'استوک']),
+              serialNo: `SN-${randNum(100000, 999999)}`
+            },
+            coverage: {
+              theftCoverage: coverageDetails[coverage].theftCoverage,
+              maxCoverage: coverageDetails[coverage].maxCoverage,
+              franchise: coverageDetails[coverage].franchise,
+              conditions: coverageDetails[coverage].conditions,
+              waitingPeriod: coverageDetails[coverage].waitingPeriod,
+              documentRequired: coverageDetails[coverage].documentRequired
+            },
+            insured: {
+              name: rand(names),
+              nationalId: `${randNum(100, 999)}${randNum(1000000, 9999999)}`,
+              mobile: phone,
+              city: insuredCity,
+              address: `${insuredCity}، خیابان ${rand(['ولیعصر', 'آزادی', 'انقلاب', 'مطهری'])}، پلاک ${randNum(10, 999)}`
+            },
+            payment: {
+              monthlyPrice: formatPrice(monthlyInstallmentToman),
+              installmentCount: installmentCount,
+              paidCount: paidCount,
+              paidAmount: formatPrice(paidAmountToman),
+              remainingAmount: formatPrice(totalPriceToman - paidAmountToman),
+              nextDueDate: paidCount < installmentCount
+                ? (isIpg ? issueDate : `1404/${String(((issueMonth + paidCount - 1) % 12) + 1).padStart(2, '0')}/${String(issueDay).padStart(2, '0')}`)
+                : '-',
+              nextAmount: paidCount < installmentCount
+                ? formatPrice(isIpg ? totalPriceToman : monthlyInstallmentToman)
+                : '-',
+              paymentMethod: isIpg ? 'درگاه بانکی (IPG)' : 'کسر از اعتبار (DCB)',
+              billingType: isIpg ? 'یکجا (غیر اقساطی)' : 'ماهیانه (اقساطی)',
+              installments: installments
+            },
+            claims: claims,
+            subscriber: {
+              type: rand(['دائمی', 'اعتباری']),
+              simStatus: rand(['عادی', 'مسدود موقت']),
+              creditScore: rand(['کم', 'متوسط', 'زیاد']),
+              registrationDate: `1400/${String(randNum(1, 12)).padStart(2, '0')}/${String(randNum(1, 28)).padStart(2, '0')}`,
+              activationChannel: rand(['USSD (*555#)', 'My MCI App', 'SMS'])
+            },
+            history: Array(randNum(5, 10)).fill(0).map(() => {
+              const historyTypes = [
+                { type: 'پرداخت', desc: 'پرداخت قسط - موفق' },
+                { type: 'پرداخت', desc: 'پرداخت قسط - ناموفق' },
+                { type: 'یادآوری', desc: 'ارسال یادآوری سررسید قسط' },
+                { type: 'استعلام', desc: 'استعلام وضعیت بیمه‌نامه' },
+                { type: 'پشتیبانی', desc: 'تماس با مرکز پشتیبانی' },
+                { type: 'سیستم', desc: 'ارسال بیمه‌نامه به ایمیل' },
+                { type: 'خسارت', desc: 'ثبت گزارش سرقت' },
+                { type: 'تمدید', desc: 'درخواست تمدید بیمه‌نامه' }
+              ];
+              const item = rand(historyTypes);
+              return {
+                date: randDate(),
+                type: item.type,
+                desc: item.desc
+              };
+            }).sort((a, b) => b.date.localeCompare(a.date)),
+            documents: [
+              { name: 'بیمه‌نامه اصلی', status: 'موجود', format: 'PDF' },
+              { name: 'اصل گزارش کلانتری سرقت', status: 'موجود', format: 'PDF' },
+              { name: 'نامه مسدودی سیم‌کارت', status: 'موجود', format: 'PDF' },
+              { name: 'فاکتور خرید یا استعلام IMEI', status: 'موجود', format: 'PDF' },
+              { name: 'تصویر کارت ملی', status: 'موجود', format: 'JPG' }
+            ]
+          }
+        });
+      
+      // 2. هوش مصنوعی (Demo)
+      if (Math.random() > 0.3) {
+        services.push({
+          id: 'ai',
+          type: 'هوش مصنوعی',
+          name: 'AI Assistant',
+          icon: '🤖',
+          status: 'فعال',
+          statusClass: 'status-active',
+          expiry: randDate(),
+          price: `${formatPrice(randNum(50, 200) * 1000)} ریال/ماه`,
+          hasDetails: false,
+          demo: true
+        });
+      }
+      
+      // 3. کتاب صوتی (Demo)
+      if (Math.random() > 0.4) {
+        services.push({
+          id: 'audiobook',
+          type: 'کتاب صوتی',
+          name: 'Audiobook Premium',
+          icon: '🎧',
+          status: 'فعال',
+          statusClass: 'status-active',
+          expiry: randDate(),
+          price: `${formatPrice(randNum(50, 150) * 1000)} ریال/ماه`,
+          hasDetails: false,
+          demo: true
+        });
+      }
+      
+      // 4. VOD (Demo)
+      if (Math.random() > 0.3) {
+        services.push({
+          id: 'vod',
+          type: 'ویدیو آنلاین',
+          name: 'VOD Subscription',
+          icon: '🎬',
+          status: 'فعال',
+          statusClass: 'status-active',
+          expiry: randDate(),
+          price: `${formatPrice(randNum(100, 300) * 1000)} ریال/ماه`,
+          hasDetails: false,
+          demo: true
+        });
+      }
+      
+      return services;
+    }
+    
+    // تولید اطلاعات کلی مشترک
+    function generateSubscriberOverview(phone) {
+      const rand = (arr) => arr[Math.floor(Math.random() * arr.length)];
+      const randNum = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+      const randDate = () => `1404/${String(randNum(1, 12)).padStart(2, '0')}/${String(randNum(1, 28)).padStart(2, '0')}`;
+      
+      return {
+        msisdn: phone,
+        type: rand(['دائمی', 'اعتباری']),
+        simStatus: rand(['عادی', 'مسدود', 'قطع یک‌طرفه']),
+        registrationDate: randDate(),
+        creditScore: rand(['کم', 'متوسط', 'زیاد']),
+        activeServicesCount: '-' // Will be updated
+      };
+    }
+    
+    // اعتبارسنجی شماره موبایل ایران
+    function isValidIranianMobile(phone) {
+      return /^09[0-9]{9}$/.test(phone);
+    }
+
+    function search() {
+      const phone = document.getElementById('phoneInput').value.trim();
+      const errorBox = document.getElementById('errorBox');
+      const resultBox = document.getElementById('result');
+      const detailsBox = document.getElementById('serviceDetails');
+      
+      errorBox.style.display = 'none';
+      resultBox.style.display = 'none';
+      detailsBox.style.display = 'none';
+      
+      if (!phone) {
+        errorBox.textContent = 'لطفا شماره موبایل را وارد کنید';
+        errorBox.style.display = 'block';
+        return;
+      }
+      
+      if (!isValidIranianMobile(phone)) {
+        errorBox.textContent = 'شماره موبایل نامعتبر است. فرمت صحیح: 09XXXXXXXXX';
+        errorBox.style.display = 'block';
+        return;
+      }
+      
+      // تولید داده
+      const subscriberOverview = generateSubscriberOverview(phone);
+      const services = generateUserServices(phone);
+      subscriberOverview.activeServicesCount = services.length;
+      
+      currentUserData = {
+        overview: subscriberOverview,
+        services: services
+      };
+      
+      // نمایش اطلاعات کلی
+      document.getElementById('subscriberOverview').innerHTML = `
+        <div class="info-item"><label>MSISDN</label><span>${subscriberOverview.msisdn}</span></div>
+        <div class="info-item"><label>نوع مشترک</label><span>${subscriberOverview.type}</span></div>
+        <div class="info-item"><label>وضعیت سیم‌کارت</label><span>${subscriberOverview.simStatus}</span></div>
+        <div class="info-item"><label>تاریخ ثبت‌نام</label><span>${subscriberOverview.registrationDate}</span></div>
+        <div class="info-item"><label>امتیاز اعتبار</label><span>${subscriberOverview.creditScore}</span></div>
+        <div class="info-item"><label>تعداد سرویس‌های فعال</label><span>${subscriberOverview.activeServicesCount}</span></div>
+      `;
+      
+      // نمایش کارت‌های سرویس
+      const servicesHtml = services.map(service => `
+        <div class="service-card" onclick="${service.hasDetails ? `showServiceDetails('${service.id}')` : `showToast('این سرویس در حال توسعه است')`}">
+          <div class="service-header">
+            <div class="service-icon ${service.id}">${service.icon}</div>
+            <div class="service-title">
+              <h4>${service.name}</h4>
+              <p>${service.type}</p>
+            </div>
+            ${service.demo ? '<span class="badge-demo">DEMO</span>' : ''}
+          </div>
+          <div class="service-info">
+            <div class="service-info-row">
+              <label>وضعیت:</label>
+              <span class="${service.statusClass}">${service.status}</span>
+            </div>
+            <div class="service-info-row">
+              <label>تاریخ انقضا:</label>
+              <span>${service.expiry}</span>
+            </div>
+            <div class="service-info-row">
+              <label>هزینه:</label>
+              <span>${service.price}</span>
+            </div>
+          </div>
+          <div class="service-actions">
+            <button class="btn btn-small btn-primary" onclick="event.stopPropagation(); ${service.hasDetails ? `showServiceDetails('${service.id}')` : `showToast('در حال توسعه')`}">
+              ${service.hasDetails ? 'مشاهده جزئیات' : 'مشاهده اطلاعات'}
+            </button>
+          </div>
+        </div>
+      `).join('');
+      
+      document.getElementById('servicesGrid').innerHTML = servicesHtml || '<p style="color: #7c8590; text-align: center;">هیچ سرویس فعالی یافت نشد</p>';
+      
+      resultBox.style.display = 'block';
+      resultBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    
+    function showServiceDetails(serviceId) {
+      if (!currentUserData) return;
+      
+      const service = currentUserData.services.find(s => s.id === serviceId);
+      if (!service || !service.hasDetails) {
+        showToast('جزئیات این سرویس در دسترس نیست');
+        return;
+      }
+      
+      const data = service.details;
+      
+      // Policy Info
+      document.getElementById('policyInfo').innerHTML = `
+        <div class="info-item"><label>شماره بیمه‌نامه</label><span>${data.policy.policyNo}</span></div>
+        <div class="info-item"><label>تاریخ صدور</label><span>${data.policy.issueDate}</span></div>
+        <div class="info-item"><label>تاریخ شروع</label><span>${data.policy.startDate}</span></div>
+        <div class="info-item"><label>تاریخ پایان</label><span>${data.policy.endDate}</span></div>
+        <div class="info-item"><label>وضعیت بیمه‌نامه</label><span class="${data.policy.statusClass}">${data.policy.status}</span></div>
+        <div class="info-item"><label>سطح پوشش</label><span>${data.policy.coverage}</span></div>
+        <div class="info-item"><label>نوع بیمه</label><span>${data.policy.insuranceType}</span></div>
+        <div class="info-item"><label>بیمه‌گر</label><span>${data.policy.insurer}</span></div>
+        <div class="info-item"><label>مدت بیمه</label><span>${data.policy.policyDuration}</span></div>
+        <div class="info-item"><label>تمدید خودکار</label><span>${data.policy.autoRenew}</span></div>
+      `;
+      
+      // Device Info
+      document.getElementById('deviceInfo').innerHTML = `
+        <div class="info-item"><label>برند</label><span>${data.device.brand}</span></div>
+        <div class="info-item"><label>مدل</label><span>${data.device.model}</span></div>
+        <div class="info-item"><label>IMEI</label><span>${data.device.imei}</span></div>
+        <div class="info-item"><label>شماره سریال</label><span>${data.device.serialNo}</span></div>
+        <div class="info-item"><label>رنگ</label><span>${data.device.color}</span></div>
+        <div class="info-item"><label>تاریخ خرید</label><span>${data.device.purchaseDate}</span></div>
+        <div class="info-item"><label>ارزش دستگاه</label><span>${data.device.deviceValue} ریال</span></div>
+        <div class="info-item"><label>وضعیت دستگاه</label><span>${data.device.condition}</span></div>
+      `;
+      
+      // Coverage Info
+      document.getElementById('coverageInfo').innerHTML = `
+        <div class="info-item"><label>پوشش سرقت</label><span>${data.coverage.theftCoverage}</span></div>
+        <div class="info-item"><label>حداکثر پوشش</label><span>${data.coverage.maxCoverage}</span></div>
+        <div class="info-item"><label>فرانشیز</label><span>${data.coverage.franchise}</span></div>
+        <div class="info-item"><label>مدت انتظار</label><span>${data.coverage.waitingPeriod}</span></div>
+        <div class="info-item" style="grid-column: 1/-1;"><label>شرایط پوشش</label><span>${data.coverage.conditions}</span></div>
+        <div class="info-item" style="grid-column: 1/-1;"><label>مدارک مورد نیاز</label><span>${data.coverage.documentRequired}</span></div>
+      `;
+      
+      // Insured Info
+      document.getElementById('insuredInfo').innerHTML = `
+        <div class="info-item"><label>نام و نام خانوادگی</label><span>${data.insured.name}</span></div>
+        <div class="info-item"><label>کد ملی</label><span>${data.insured.nationalId}</span></div>
+        <div class="info-item"><label>موبایل</label><span>${data.insured.mobile}</span></div>
+        <div class="info-item"><label>شهر</label><span>${data.insured.city}</span></div>
+        <div class="info-item" style="grid-column: 1/-1;"><label>آدرس</label><span>${data.insured.address}</span></div>
+      `;
+      
+      // Payment Info
+      document.getElementById('paymentInfo').innerHTML = `
+        <div class="info-item"><label>هزینه ماهیانه</label><span>${data.payment.monthlyPrice} تومان</span></div>
+        <div class="info-item"><label>نوع پرداخت</label><span>${data.payment.billingType}</span></div>
+        <div class="info-item"><label>تعداد اقساط</label><span>${data.payment.installmentCount}</span></div>
+        <div class="info-item"><label>اقساط پرداخت شده</label><span>${data.payment.paidCount}</span></div>
+        <div class="info-item"><label>مبلغ پرداخت شده</label><span>${data.payment.paidAmount} تومان</span></div>
+        <div class="info-item"><label>مانده بدهی</label><span>${data.payment.remainingAmount} تومان</span></div>
+        <div class="info-item"><label>سررسید بعدی</label><span>${data.payment.nextDueDate}</span></div>
+        <div class="info-item"><label>مبلغ پرداخت بعدی</label><span>${data.payment.nextAmount} تومان</span></div>
+        <div class="info-item"><label>روش پرداخت</label><span>${data.payment.paymentMethod}</span></div>
+      `;
+      
+      // Installments Timeline
+      document.getElementById('installments').innerHTML = data.payment.installments.map((s, i) => 
+        `<div class="installment ${s}">${i + 1}</div>`
+      ).join('');
+      
+      // Claims History (Theft)
+      if (data.claims && data.claims.length > 0) {
+        document.getElementById('claimsSection').style.display = 'block';
+        document.querySelector('#claimsTable tbody').innerHTML = data.claims.map(c => 
+          `<tr>
+            <td>${c.claimNo}</td>
+            <td>${c.date}</td>
+            <td>${c.type}<br><small style="color: #7c8590;">گزارش پلیس: ${c.policeReportNo}</small></td>
+            <td>${c.amount} ریال</td>
+            <td>${c.franchise} ریال</td>
+            <td>${c.payable} ریال</td>
+            <td><span class="${c.statusClass}">${c.status}</span><br><small style="color: #7c8590;">تاریخ گزارش: ${c.reportDate}</small></td>
+          </tr>`
+        ).join('');
+      } else {
+        document.getElementById('claimsSection').style.display = 'none';
+      }
+      
+      // Subscriber Info
+      document.getElementById('subscriberInfo').innerHTML = `
+        <div class="info-item"><label>نوع خط</label><span>${data.subscriber.type}</span></div>
+        <div class="info-item"><label>وضعیت سیم‌کارت</label><span>${data.subscriber.simStatus}</span></div>
+        <div class="info-item"><label>امتیاز اعتباری</label><span>${data.subscriber.creditScore}</span></div>
+        <div class="info-item"><label>تاریخ فعال سازی سیم</label><span>${data.subscriber.registrationDate}</span></div>
+        <div class="info-item"><label>کانال فعالسازی</label><span>${data.subscriber.activationChannel}</span></div>
+      `;
+      
+      // History
+      document.querySelector('#historyTable tbody').innerHTML = data.history.map(h => 
+        `<tr><td>${h.date}</td><td>${h.type}</td><td>${h.desc}</td></tr>`
+      ).join('');
+      
+      // Documents
+      document.querySelector('#documentsTable tbody').innerHTML = data.documents.map(d => 
+        `<tr>
+          <td>${d.name}</td>
+          <td><span class="status-active">${d.status}</span></td>
+          <td>${d.format}</td>
+          <td><button class="btn btn-small" onclick="showToast('دانلود ${d.name}')">دانلود</button></td>
+        </tr>`
+      ).join('');
+      
+      // نمایش لایه جزئیات و مخفی کردن لایه اصلی
+      document.getElementById('result').style.display = 'none';
+      document.getElementById('serviceDetails').style.display = 'block';
+      document.getElementById('serviceDetails').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    
+    function backToOverview() {
+      document.getElementById('serviceDetails').style.display = 'none';
+      document.getElementById('result').style.display = 'block';
+      document.getElementById('result').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    
+    // Toast notification
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.style.display = 'block';
+      setTimeout(() => { toast.style.display = 'none'; }, 2500);
+    }
+    
+    // Enter key support
+    document.getElementById('phoneInput').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') search();
+    });
+  </script>
+</body>
+</html>
