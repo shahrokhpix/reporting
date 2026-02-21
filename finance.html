@@ -1,0 +1,722 @@
+
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مستندات شاخص‌های کلیدی عملکرد (KPI)</title>
+    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        :root {
+            --bg:        #0f1117;
+            --surface:   #1a1d27;
+            --surface2:  #22263a;
+            --border:    #2e3352;
+            --accent:    #4f8ef7;
+            --accent2:   #36c9a0;
+            --accent3:   #f0a500;
+            --text:      #d4d8f0;
+            --text-muted:#7a83b0;
+            --text-head: #e8ecff;
+            --copy-bg:   #2a2f4a;
+            --copy-hover:#3a4060;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Vazirmatn', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.9;
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 48px 24px 80px;
+        }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+        h1 {
+            font-size: 1.75rem;
+            color: var(--text-head);
+            text-align: center;
+            border-bottom: 2px solid var(--accent);
+            padding-bottom: 16px;
+            margin-bottom: 36px;
+        }
+
+        h2 {
+            font-size: 1.25rem;
+            color: var(--accent);
+            margin-top: 56px;
+            margin-bottom: 20px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        h2::before {
+            content: '';
+            display: inline-block;
+            width: 4px;
+            height: 20px;
+            background: var(--accent);
+            border-radius: 2px;
+            flex-shrink: 0;
+        }
+
+        h3 {
+            font-size: 1.05rem;
+            color: var(--accent2);
+            margin-top: 36px;
+            margin-bottom: 10px;
+        }
+
+        .alert {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-right: 4px solid var(--accent3);
+            border-radius: 10px;
+            padding: 16px 20px;
+            margin-bottom: 32px;
+            font-size: 0.95rem;
+        }
+        .alert strong { color: var(--accent3); }
+        .alert code {
+            background: var(--copy-bg);
+            color: var(--accent);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.88em;
+        }
+
+        ul { margin-right: 20px; padding-right: 4px; }
+        ul li { margin-bottom: 8px; }
+        ul li strong { color: var(--accent3); }
+        ul li code {
+            background: var(--copy-bg);
+            color: var(--accent);
+            padding: 1px 5px;
+            border-radius: 4px;
+            font-size: 0.88em;
+        }
+
+        .metric-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px 24px;
+            margin: 20px 0;
+            transition: border-color 0.2s;
+        }
+        .metric-card:hover { border-color: var(--accent); }
+        .metric-card h3 { margin-top: 0; margin-bottom: 12px; }
+
+        .explanation {
+            background: var(--surface2);
+            border-right: 3px solid var(--accent2);
+            border-radius: 6px;
+            padding: 10px 14px;
+            font-size: 0.92rem;
+            color: var(--text-muted);
+            margin-bottom: 14px;
+            line-height: 1.75;
+        }
+        .explanation strong { color: var(--text); }
+
+        .vars {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 10px 0 14px;
+        }
+        .var-badge {
+            background: var(--copy-bg);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 3px 12px;
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            white-space: nowrap;
+        }
+        .var-badge span { color: var(--accent); font-style: italic; margin-left: 4px; }
+
+        .formula-wrap { position: relative; margin: 10px 0; }
+        .formula {
+            background: var(--copy-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 14px 56px 14px 14px;
+            text-align: center;
+            font-size: 1.05em;
+            direction: ltr;
+            overflow-x: auto;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            border-radius: 6px;
+            padding: 4px 10px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.15s;
+            font-family: 'Vazirmatn', sans-serif;
+            white-space: nowrap;
+        }
+        .copy-btn:hover { background: var(--copy-hover); color: var(--text-head); border-color: var(--accent); }
+        .copy-btn.copied { color: var(--accent2); border-color: var(--accent2); }
+
+        mjx-container { color: var(--text-head) !important; }
+
+        .page-break { margin: 48px 0 0; }
+
+        #toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(60px);
+            background: var(--accent2);
+            color: #0f1117;
+            padding: 10px 24px;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            opacity: 0;
+            transition: all 0.3s;
+            pointer-events: none;
+            z-index: 999;
+        }
+        #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+        @media print {
+            .copy-btn { display: none; }
+            .page-break { page-break-before: always; }
+            body { background: #fff; color: #000; padding: 0; }
+        }
+        @media (max-width: 600px) {
+            h1 { font-size: 1.35rem; }
+            .metric-card { padding: 14px 16px; }
+        }
+    </style>
+</head>
+<body>
+
+<div id="toast">فرمول کپی شد ✓</div>
+
+<h1>مستندات پیاده‌سازی شاخص‌های کلیدی عملکرد (KPI) و مالی</h1>
+
+<div class="alert">
+    <strong>هدف سند:</strong> تعریف دقیق فرمول‌ها، متغیرها و منطق محاسباتی هر شاخص جهت پیاده‌سازی در داشبوردهای مدیریتی.<br><br>
+    <strong>واحد پولی پایه:</strong> تومان. برای جلوگیری از خطای سرریز داده (Overflow) از نوع <code>BigInt</code> برای مقادیر ریالی و از <code>Decimal</code> برای نرخ‌ها استفاده شود.<br><br>
+    <strong>دکمه کپی:</strong> روی دکمه <code>کپی</code> کنار هر فرمول کلیک کنید تا فرمول LaTeX آن در کلیپ‌بورد ذخیره شود.
+</div>
+
+<h2>ملاحظات فنی عمومی برای توسعه‌دهندگان</h2>
+<ul>
+    <li><strong>خطای تقسیم بر صفر (ZeroDivisionError):</strong> پیش از هر محاسبه تقسیمی، مخرج بررسی شود؛ در صورت صفر بودن خروجی <code>NULL</code> یا <code>0</code> برگردد.</li>
+    <li><strong>محاسبه درصدها:</strong> تمامی نرخ‌هایی که ماهیت درصدی دارند در فرمول ضربدر ۱۰۰ شده‌اند؛ مقدار خام نیز در دیتابیس ذخیره شود.</li>
+    <li><strong>دوره‌های زمانی:</strong> متغیر <code>t</code> نشان‌دهنده دوره فعلی و <code>t-1</code> نشان‌دهنده دوره قبلی (ماه یا هفته) است.</li>
+    <li><strong>کاربران فعال (Active Users):</strong> کاربرانی که در بازه زمانی تعریف‌شده (معمولاً ۳۰ روز) حداقل یک تعامل داشته‌اند.</li>
+</ul>
+
+
+<!-- ===== بخش اول ===== -->
+<h2>بخش اول: تعاریف پایه و شاخص‌های کلان مالی</h2>
+
+<div class="metric-card">
+    <h3>۱. درآمد کل (Total Revenue)</h3>
+    <div class="explanation">
+        مجموع تمام درآمدهای دریافت‌شده از همه منابع و سرویس‌ها در یک بازه زمانی مشخص.<br>
+        <strong>کاربرد:</strong> پایه‌ترین شاخص مالی و ورودی اصلی تمام فرمول‌های دیگر است.
+    </div>
+    <div class="vars">
+        <div class="var-badge"><span>Revenue_i</span> درآمد منبع i-ام</div>
+        <div class="var-badge"><span>n</span> تعداد کل منابع درآمدی</div>
+    </div>
+    <div class="formula-wrap">
+        <div class="formula">$$ \text{Total Revenue} = \sum_{i=1}^{n} \text{Revenue}_i $$</div>
+        <button class="copy-btn" onclick="copyFormula('\text{Total Revenue} = \sum_{i=1}^{n} \text{Revenue}_i', this)">کپی</button>
+    </div>
+</div>
+
+<div class="metric-card">
+    <h3>۲. مالیات و نرخ مالیات (Tax & Tax Rate)</h3>
+    <div class="explanation">
+        <strong>مالیات (Tax):</strong> مقدار ریالی مالیات اعمال‌شده بر درآمد ناخالص بر اساس نرخ تعیین‌شده توسط قانون.<br>
+        <strong>نرخ مالیات (Tax Rate):</strong> درصد مالیات تعلق‌گرفته به هر واحد درآمد؛ از تقسیم مالیات پرداخت‌شده بر درآمد به‌دست می‌آید. برای بررسی انطباق با قوانین مالیاتی استفاده می‌شود.
+    </div>
+    <div class="vars">
+        <div class="var-badge"><span>Revenue</span> درآمد ناخالص</div>
+        <div class="var-badge"><span>TaxRate</span> نرخ مالیات (۰ تا ۱)</div>
+        <div class="var-badge"><span>Tax</span> مقدار مالیات</div>
+    </div>
+    <div class="formula-wrap">
+        <div class="formula">$$ \text{Tax} = \text{Revenue} \times \text{TaxRate} $$</div>
+        <button class="copy-btn" onclick="copyFormula('\text{Tax} = \text{Revenue} \times \text{TaxRate}', this)">کپی</button>
+    </div>
+    <div class="formula-wrap">
+        <div class="formula">$$ \text{Tax Rate} = \frac{\text{Tax}}{\text{Revenue}} $$</div>
+        <button class="copy-btn" onclick="copyFormula('\text{Tax Rate} = \frac{\text{Tax}}{\text{Revenue}}', this)">کپی</button>
+    </div>
+</div>
+
+<div class="metric-card">
+    <h3>۳. هزینه کل (Total Cost)</h3>
+    <div class="explanation">
+        <strong>هزینه مستقیم (Direct Cost):</strong> هزینه‌هایی که مستقیماً به ارائه سرویس وابسته‌اند؛ مثل هزینه سرور، پیامک، کارمزد پرداخت‌یار.<br>
+        <strong>هزینه غیرمستقیم (Indirect Cost):</strong> هزینه‌های عملیاتی مثل حقوق تیم، بازاریابی، اجاره دفتر.<br>
+        <strong>نکته:</strong> تفکیک این دو نوع هزینه برای محاسبه صحیح Gross Margin الزامی است.
+    </div>
+    <div class="vars">
+        <div class="var-badge"><span>Direct Costs</span> هزینه‌های مستقیم</div>
+        <div class="var-badge"><span>Indirect Costs</span> هزینه‌های غیرمستقیم</div>
+    </div>
+    <div class="formula-wrap">
+        <div class="formula">$$ \text{Total Cost} = \text{Direct Costs} + \text{Indirect Costs} $$</div>
+        <button class="copy-btn" onclick="copyFormula('\text{Total Cost} = \text{Direct Costs} + \text{Indirect Costs}', this)">کپی</button>
+    </div>
+</div>
+
+<div class="metric-card">
+    <h3>۴. سود خالص (Net Profit)</h3>
+    <div class="explanation">
+        آنچه پس از کسر تمام هزینه‌ها و مالیات از درآمد ناخالص باقی می‌ماند. شاخص نهایی سلامت مالی کسب‌وکار است.<br>
+        <strong>نکته:</strong> سود منفی (زیان) به معنای سوختن نقدینگی (Cash Burn) است و باید به دقت پایش شود.
+    </div>
+    <div class="vars">
+        <div class="var-badge"><span>Revenue</span> درآمد ناخالص</div>
+        <div class="var-badge"><span>Total Cost</span> هزینه کل</div>
+        <div class="var-badge"><span>Tax</span> مالیات</div>
+    </div>
+    <div class="formula-wrap">
+        <div class="formula">$$ \text{Profit} = \text{Revenue} - \text{Total Cost} - \text{Tax} $$</div>
+        <button class="copy-btn" onclick="copyFormula('\text{Profit} = \text{Revenue} - \text{Total Cost} - \text{Tax}', this)">کپی</button>
+    </div>
+</div>
+
+<div class="metric-card">
+    <h3>۵. حاشیه سود (Profit Margin %)</h3>
+    <div class="explanation">
+        نشان می‌دهد از هر ۱۰۰ تومان درآمد، چند تومان به‌عنوان سود خالص باقی می‌ماند.<br>
+        <strong>تفسیر:</strong> عدد بالاتر یعنی کارایی عملیاتی بیشتر. مقایسه با رقبا و میانگین صنعت ضروری است.<br>
+        <strong>مثال:</strong> حاشیه سود ۲۵٪ یعنی از هر ۱۰۰ تومان درآمد، ۲۵ تومان سود است.
+    </div>
+    <div class="vars">
+        <div class="var-badge"><span>Profit</span> سود خالص</div>
+        <div class="var-badge"><span>Revenue</span> درآمد ناخالص</div>
+    </div>
+    <div class="formula-wrap">
+        <div class="formula">$$ \text{Profit Margin (\%)} = \left( \frac{\text{Profit}}{\text{Revenue}} \right) \times 100 $$</div>
+        <button class="copy-btn" onclick="copyFormula('\text{Profit Margin (\%)} = \left( \frac{\text{Profit}}{\text{Revenue}} \right) \times 100', this)">کپی</button>
+    </div>
+</div>
+
+<div class="metric-card">
+    <h3>۶. رشد درآمد (Revenue Growth %)</h3>
+    <div class="explanation">
+        درصد تغییر درآمد نسبت به دوره قبلی (ماه به ماه یا سال به سال).<br>
+        <strong>تفسیر:</strong> عدد مثبت یعنی رشد، منفی یعنی افت. رشد ماهانه بالای ۱۰٪ در استارتاپ‌های ابتدایی مطلوب است.<br>
+        <strong>هشدار فنی:</strong> اگر <code>Revenue_(t-1)</code> صفر باشد این فرمول قابل استفاده نیست؛ باید مقدار <code>NULL</code> برگردانده شود.
+    </div>
+    <div class="vars">
+        <div class="var-badge"><span>Revenue_t</span> درآمد دوره فعلی</div>
+        <div class="var-badge"><span>Revenue_(t-1)</span> درآمد دوره قبل</div>
+    </div>
+    <div class="formula-wrap">
+        <div class="formula">$$ \text{Revenue Growth (\%)} = \left( \frac{\text{Revenue}_t - \text{Revenue}_{t-1}}{\text{Revenue}_{t-1}} \right) \times 100 $$</div>
+        <button class="copy-btn" onclick="copyFormula('\text{Revenue Growth (\%)} = \left( \frac{\text{Revenue}_t - \text{Revenue}_{t-1}}{\text{Revenue}_{t-1}} \right) \times 100', this)">کپی</button>
+    </div>
+</div>
+
+<div class="metric-card">
+    <h3>۷. سهم درآمد (Revenue Share %)</h3>
+    <div class="explanation">
+        سهم درآمدی هر سرویس، محصول یا کانال فروش نسبت به کل درآمد کسب‌وکار.<br>
+        <strong>کاربرد:</strong> تحلیل تنوع درآمد، شناسایی وابستگی‌های بیش از حد به یک محصول، تصمیم‌گیری برای سرمایه‌گذاری روی سرویس‌های پرسودتر.
+    </div>
+    <div class="vars">
+        <div class="var-badge"><span>Revenue_service</span> درآمد سرویس خاص</div>
+        <div class="var-badge"><span>Total Revenue</span> کل درآمد</div>
+    </div>
+    <div class="formula-wrap">
+        <div class="formula">$$ \text{Revenue Share (\%)} = \left( \frac{\text{Revenue}_{\text{service}}}{\text{Total Revenue}} \right) \times 100 $$</div>
+        <button class="copy-btn" onclick="copyFormula('\text{Revenue Share (\%)} = \left( \frac{\text{Revenue}_{\text{service}}}{\text{Total Revenue}} \right) \times 100', this)">کپی</button>
+    </div>
+</div>
+
+<div class="metric-card">
+    <h3>۸. نرخ عمومی (General Rate Formula)</h3>
+    <div class="explanation">
+        فرمول پایه برای محاسبه هر نوع نرخ درصدی بین یک جزء و کل آن. تمامی فرمول‌های «نرخ» و «سهم» در این سند مشتق این فرمول‌اند.<br>
+        <strong>مثال کاربرد:</strong> نرخ کلیک، نرخ باز شدن ایمیل، سهم یک کانال از ترافیک.
+    </div>
+    <div class="vars">
+        <div class="var-badge"><span>Part</span> مقدار جزئی</div>
+        <div class="var-badge"><span>Whole</span> مقدار کل</div>
+    </div>
+    <div class="formula-wrap">
+        <div class="formula">$$ \text{Rate (\%)} = \left( \frac{\text{Part}}{\text{Whole}} \right) \times 100 $$</div>
+        <button class="copy-btn" onclick="copyFormula('\text{Rate (\%)} = \left( \frac{\text{Part}}{\text{Whole}} \right) \times 100', this)">کپی</button>
+    </div>
+</div>
+
+
+<!-- ===== بخش دوم ===== -->
+<div class="page-break"></div>
+<h2>بخش دوم: شاخص‌های اشتراک و ارزش کاربر (SaaS &amp; User Metrics)</h2>
+
+<div class="metric-card">
+    <h3>۱. نرخ ریزش کاربران (Churn Rate %)</h3>
+    <div class="explanation">
+        درصد کاربرانی که در یک دوره زمانی مشخص سرویس را ترک کرده یا اشتراک‌شان را لغو کرده‌اند.<br>
+        <strong>تفسیر:</strong> Churn Rate بالا نشان‌دهنده مشکل در ارزش پیشنهادی یا تجربه کاربری است. برای SaaS، عدد زیر ۵٪ ماهانه توصیه می‌شود.<br>
+        <strong>تعریف «Churned»:</strong> کاربری که در ابتدای دوره فعال بوده ولی در طول دوره هیچ تعاملی نداشته است.
+    </div>
+    <div class="vars">
+        <div class="var-badge"><span>Churned Users</span> کاربران از دست رفته</div>
+        <div class="var-badge"><span>UsersAtStartOfPeriod</span> کاربران فعال ابتدای دوره</div>
+    </div>
+    <div class="formula-wrap">
+        <div class="formula">$$ \text{Churn Rate (\%)} = \left( \frac{\text{Churned Users}}{\text{Users At Start Of Period}} \right) \times 100 $$</div>
+        <button class="copy-btn" onclick="copyFormula('\text{Churn Rate (\%)} = \left( \frac{\text{Churned Users}}{\text{Users At Start Of Period}} \right) \times 100', this)">کپی</button>
+    </div>
+</div>
+
+<div class="metric-card">
+    <h3>۲. نرخ ماندگاری کاربران (Retention Rate %)</h3>
+    <div class="explanation">
+        درصد کاربرانی که در یک دوره همچنان فعال مانده‌اند؛ متمم مستقیم Churn Rate است.<br>
+        <strong>تفسیر:</strong> Retention Rate 90٪ یعنی از هر ۱۰۰ کاربر ابتدای دوره، ۹۰ نفر هنوز فعال هستند.<br>
+        <strong>کاربرد:</strong> محاسبه LTV، پیش‌بینی درآمد آینده، و ارزیابی کیفیت محصول.
+    </div>
+    <div class="vars">
+        <div class="var-badge"><span>ChurnRate</span> نرخ ریزش (درصد)</div>
+    </div>
+    <div class="formula-wrap">
+        <div class="formula">$$ \text{Retention Rate (\%)} = 100 - \text{Churn Rate} $$</div>
+        <button class="copy-btn" onclick="copyFormula('\text{Retention Rate (\%)} = 100 - \text{Churn Rate}', this)">کپی</button>
+    </div>
+</div>
+
+<div class="metric-card">
+    <h3>۳. میانگین درآمد هر کاربر (ARPU) و هر کاربر پرداخت‌کننده (ARPPU)</h3>
+    <div class="explanation">
+        <strong>ARPU:</strong> میانگین درآمد تولیدشده به‌ازای هر کاربر فعال؛ شامل کاربران رایگان نیز می‌شود.<br>
+        <strong>ARPPU:</strong> میانگین درآمد فقط از کاربرانی که حداقل یک پرداخت انجام داده‌اند؛ معیار دقیق‌تری برای ارزش‌گذاری کاربران پولی.<br>
+        <strong>مقایسه:</strong> اختلاف زیاد بین ARPU و ARPPU نشان‌دهنده پایین بودن نرخ تبدیل کاربران رایگان به پولی است.
+    </div>
+    <div class="vars">
+        <div class="var-badge"><span>Revenue</span> درآمد کل در بازه</div>
+        <div class="var-badge"><span>Active Users</span> کاربران فعال</div>
+        <div class="var-badge"><span>Paying Users</span> کاربران پولی</div>
+    </div>
+    <div class="formula-wrap">
+        <div class="formula">$$ \text{ARPU} = \frac{\text{Revenue}}{\text{Active Users}} $$</div>
+        <button class="copy-btn" onclick="copyFormula('\text{ARPU} = \frac{\text{Revenue}}{\text{Active Users}}', this)">کپی</button>
+    </div>
+    <div class="formula-wrap">
+        <div class="formula">$$ \text{ARPPU} = \frac{\text{Revenue}}{\text{Paying Users}} $$</div>
+        <button class="copy-btn" onclick="copyFormula('\text{ARPPU} = \frac{\text{Revenue}}{\text{Paying Users}}', this)">کپی</button>
+    </div>
+</div>
+
+<div class="metric-card">
+    <h3>۴. درآمد تکرارشونده ماهانه و سالانه (MRR &amp; ARR)</h3>
+    <div class="explanation">
+        <strong>MRR (Monthly Recurring Revenue):</strong> کل درآمد اشتراکی ماهانه؛ پیش‌بینی‌پذیرترین بخش درآمد است.<br>
+        <strong>ARR (Annual Recurring Revenue):</strong> برآورد سالانه بر اساس MRR فعلی؛ معیار کلیدی برای مذاکره با سرمایه‌گذار.<br>
+        <strong>نکته فنی:</strong> برای پلن‌های فصلی یا سالانه، ابتدا معادل ماهانه محاسبه شود (تقسیم بر ۳ یا ۱۲) و سپس در SUM لحاظ گردد.
+    </div>
+    <div class="vars">
+        <div class="var-badge"><span>ActiveSubscribers_plan</span> مشترکان فعال هر پلن</div>
+        <div class="var-badge"><span>MonthlyPrice_plan</span> قیمت ماهانه معادل هر پلن</div>
+    </div>
+    <div class="formula-wrap">
+        <div class="formula">$$ \text{MRR} = \sum_{\text{plan}} \left( \text{ActiveSubscribers}_{\text{plan}} \times \text{MonthlyPrice}_{\text{plan}} \right) $$</div>
+        <button class="copy-btn" onclick="copyFormula('\text{MRR} = \sum_{\text{plan}} ( \text{ActiveSubscribers}_{\text{plan}} \times \text{MonthlyPrice}_{\text{plan}} )', this)">کپی</button>
+    </div>
+    <div class="formula-wrap">
+        <div class="formula">$$ \text{ARR} = \text{MRR} \times 12 $$</div>
+        <button class="copy-btn" onclick="copyFormula('\text{ARR} = \text{MRR} \times 12', this)">کپی</button>
+    </div>
+</div>
+
+<div class="metric-card">
+    <h3>۵. ارزش طول عمر مشتری (LTV / CLV)</h3>
+    <div class="explanation">
+        برآورد کل درآمدی که یک کاربر در کل دوره فعالیتش در پلتفرم تولید می‌کند.<br>
+        <strong>Gross Margin:</strong> درصد درآمدی که پس از کسر هزینه‌های مستقیم باقی می‌ماند؛ عدد بین ۰ تا ۱.<br>
+        <strong>تفسیر:</strong> نسبت <code>LTV / CAC</code> باید حداقل ۳ باشد تا کسب‌وکار پایدار بماند.<br>
+        <strong>هشدار فنی:</strong> Churn Rate باید به‌صورت عدد اعشاری خالص (مثلاً ۰.۰۵ به جای ۵) در مخرج قرار گیرد.
+    </div>
+    <div class="vars">
+        <div class="var-badge"><span>ARPU</span> میانگین درآمد هر کاربر</div>
+        <div class="var-badge"><span>GrossMargin</span> حاشیه سود ناخالص (۰ تا ۱)</div>
+        <div class="var-badge"><span>ChurnRate</span> نرخ ریزش (عدد اعشاری)</div>
+    </div>
+    <div class="formula-wrap">
+        <div class="formula">$$ \text{LTV} = \frac{\text{ARPU} \times \text{Gross Margin}}{\text{Churn Rate}} $$</div>
+        <button class="copy-btn" onclick="copyFormula('\text{LTV} = \frac{\text{ARPU} \times \text{Gross Margin}}{\text{Churn Rate}}', this)">کپی</button>
+    </div>
+</div>
+
+
+<!-- ===== بخش سوم ===== -->
+<div class="page-break"></div>
+<h2>بخش سوم: شاخص‌های تبدیل و قیف فروش (Conversion Rates)</h2>
+
+<div class="metric-card">
+    <h3>۱. نرخ تبدیل ثبت‌نام به پرداخت</h3>
+    <div class="explanation">
+        از هر ۱۰۰ کاربری که ثبت‌نام کرده‌اند، چند نفر حداقل یک پرداخت انجام داده‌اند.<br>
+        <strong>کاربرد:</strong> سنجش کیفیت فرایند Onboarding و قدرت ارزش پیشنهادی در مرحله اول آشنایی.<br>
+        <strong>راهکار بهبود:</strong> ایمیل فعال‌سازی، آفر ویژه اولین خرید، ساده‌سازی فرایند پرداخت.
+    </div>
+    <div class="vars">
+        <div class="var-badge"><span>Paid Users</span> کاربران با حداقل یک پرداخت</div>
+        <div class="var-badge"><span>Signup Users</span> کل کاربران ثبت‌نام‌کرده</div>
+    </div>
+    <div class="formula-wrap">
+        <div class="formula">$$ \text{Signup to Payment Rate (\%)} = \left( \frac{\text{Paid Users}}{\text{Signup Users}} \right) \times 100 $$</div>
+        <button class="copy-btn" onclick="copyFormula('\text{Signup to Payment Rate (\%)} = \left( \frac{\text{Paid Users}}{\text{Signup Users}} \right) \times 100', this)">کپی</button>
+    </div>
+</div>
+
+<div class="metric-card">
+    <h3>۲. نرخ تبدیل بازدید به خرید</h3>
+    <div class="explanation">
+        از هر ۱۰۰ بازدیدکننده وب‌سایت یا اپ، چند نفر خرید انجام داده‌اند.<br>
+        <strong>کاربرد:</strong> سنجش کارایی صفحات فرود (Landing Page)، قیمت‌گذاری و UX فروش.<br>
+        <strong>مقدار مرجع:</strong> در اکثر پلتفرم‌های e-commerce نرخ تبدیل ۲ تا ۳٪ مطلوب است.
+    </div>
+    <div class="vars">
+        <div class="var-badge"><span>Purchasers</span> تعداد خریداران منحصر به فرد</div>
+        <div class="var-badge"><span>Visitors</span> تعداد بازدیدکنندگان</div>
+    </div>
+    <div class="formula-wrap">
+        <div class="formula">$$ \text{Visit to Purchase Rate (\%)} = \left( \frac{\text{Purchasers}}{\text{Visitors}} \right) \times 100 $$</div>
+        <button class="copy-btn" onclick="copyFormula('\text{Visit to Purchase Rate (\%)} = \left( \frac{\text{Purchasers}}{\text{Visitors}} \right) \times 100', this)">کپی</button>
+    </div>
+</div>
+
+<div class="metric-card">
+    <h3>۳. نرخ تبدیل قیف به کاربر (Funnel Conversion)</h3>
+    <div class="explanation">
+        چه درصدی از کاربرانی که وارد اولین مرحله قیف شده‌اند، تمام مراحل را طی کرده و به مرحله نهایی رسیده‌اند.<br>
+        <strong>کاربرد:</strong> شناسایی نقاط ریزش (Drop-off). هر مرحله‌ای که افت بیشتری دارد باید جداگانه بهینه شود.<br>
+        <strong>توصیه:</strong> این فرمول را برای هر گام متوالی قیف جداگانه محاسبه کنید تا گلوگاه دقیق پیدا شود.
+    </div>
+    <div class="vars">
+        <div class="var-badge"><span>FinalStepUsers</span> کاربران مرحله آخر قیف</div>
+        <div class="var-badge"><span>FirstStepUsers</span> کاربران مرحله اول قیف</div>
+    </div>
+    <div class="formula-wrap">
+        <div class="formula">$$ \text{Funnel Conversion Rate (\%)} = \left( \frac{\text{Final Step Users}}{\text{First Step Users}} \right) \times 100 $$</div>
+        <button class="copy-btn" onclick="copyFormula('\text{Funnel Conversion Rate (\%)} = \left( \frac{\text{Final Step Users}}{\text{First Step Users}} \right) \times 100', this)">کپی</button>
+    </div>
+</div>
+
+<div class="metric-card">
+    <h3>۴. نرخ رها کردن سبد خرید (Abandoned Cart Rate)</h3>
+    <div class="explanation">
+        درصد کاربرانی که فرایند پرداخت را آغاز کرده‌اند ولی آن را تکمیل نکرده‌اند.<br>
+        <strong>تفسیر:</strong> عدد بالا نشان‌دهنده مشکل در UX صفحه پرداخت، قیمت بالا، کندی درگاه یا عدم اطمینان کاربر است.<br>
+        <strong>راه‌حل رایج:</strong> ارسال ریمایندر (پیامک/ایمیل) به کاربران رهاکننده سبد (Abandoned Cart Recovery Campaign).
+    </div>
+    <div class="vars">
+        <div class="var-badge"><span>CheckoutStarted</span> شروع فرایند پرداخت</div>
+        <div class="var-badge"><span>PaidOrders</span> سفارش‌های تکمیل‌شده</div>
+    </div>
+    <div class="formula-wrap">
+        <div class="formula">$$ \text{Abandonment Rate (\%)} = \left( \frac{\text{Checkout Started} - \text{Paid Orders}}{\text{Checkout Started}} \right) \times 100 $$</div>
+        <button class="copy-btn" onclick="copyFormula('\text{Abandonment Rate (\%)} = \left( \frac{\text{Checkout Started} - \text{Paid Orders}}{\text{Checkout Started}} \right) \times 100', this)">کپی</button>
+    </div>
+</div>
+
+<div class="metric-card">
+    <h3>۵. نرخ تبدیل بالک به کاربر (Bulk Conversion Rate)</h3>
+    <div class="explanation">
+        از هر ۱۰۰ پیام انبوه ارسال‌شده (پیامک، ایمیل، Push Notification)، چند نفر اقدام مورد انتظار را انجام داده‌اند.<br>
+        <strong>تعریف «تبدیل»:</strong> بسته به هدف کمپین متفاوت است؛ کلیک، ثبت‌نام، خرید یا باز کردن اپ.<br>
+        <strong>کاربرد:</strong> بهینه‌سازی متن پیام، زمان ارسال، و Segmentation مخاطبان.
+    </div>
+    <div class="vars">
+        <div class="var-badge"><span>ConvertedUsers</span> کاربران تبدیل‌شده</div>
+        <div class="var-badge"><span>BulkSent</span> تعداد کل پیام‌های ارسالی</div>
+    </div>
+    <div class="formula-wrap">
+        <div class="formula">$$ \text{Bulk Conversion Rate (\%)} = \left( \frac{\text{Converted Users}}{\text{Bulk Sent}} \right) \times 100 $$</div>
+        <button class="copy-btn" onclick="copyFormula('\text{Bulk Conversion Rate (\%)} = \left( \frac{\text{Converted Users}}{\text{Bulk Sent}} \right) \times 100', this)">کپی</button>
+    </div>
+</div>
+
+<div class="metric-card">
+    <h3>۶. نرخ تعامل (Engagement Rate)</h3>
+    <div class="explanation">
+        نسبت تعداد تعاملات کاربران (کلیک، لایک، کامنت، اشتراک‌گذاری) به کل نمایش‌های محتوا.<br>
+        <strong>تعریف Impression:</strong> هر بار که محتوا به کاربری نمایش داده می‌شود، یک Impression حساب می‌شود؛ صرف‌نظر از تعامل.<br>
+        <strong>کاربرد:</strong> سنجش کیفیت و جذابیت محتوا برای مخاطب هدف؛ ابزار بهینه‌سازی استراتژی محتوایی.
+    </div>
+    <div class="vars">
+        <div class="var-badge"><span>Interactions</span> کل تعاملات (کلیک، لایک، ...)</div>
+        <div class="var-badge"><span>Total Impressions</span> کل نمایش‌ها</div>
+    </div>
+    <div class="formula-wrap">
+        <div class="formula">$$ \text{Engagement Rate (\%)} = \left( \frac{\text{Interactions}}{\text{Total Impressions}} \right) \times 100 $$</div>
+        <button class="copy-btn" onclick="copyFormula('\text{Engagement Rate (\%)} = \left( \frac{\text{Interactions}}{\text{Total Impressions}} \right) \times 100', this)">کپی</button>
+    </div>
+</div>
+
+
+<!-- ===== بخش چهارم ===== -->
+<div class="page-break"></div>
+<h2>بخش چهارم: تحلیل سطوح قیمت‌گذاری (Tier / Pricing Analytics)</h2>
+
+<div class="metric-card">
+    <h3>۱. درآمد هر سطح تعرفه (Tier Revenue)</h3>
+    <div class="explanation">
+        درآمد خالص تولیدشده از هر پلن قیمتی به‌صورت جداگانه.<br>
+        <strong>کاربرد:</strong> مقایسه عملکرد پلن‌ها، تصمیم‌گیری برای حذف یا بهبود پلن‌های کم‌درآمد، و بهینه‌سازی ساختار قیمت‌گذاری.
+    </div>
+    <div class="vars">
+        <div class="var-badge"><span>TierPrice</span> قیمت هر پلن (تومان)</div>
+        <div class="var-badge"><span>TierCount</span> تعداد مشترکان آن پلن</div>
+    </div>
+    <div class="formula-wrap">
+        <div class="formula">$$ \text{Tier Revenue} = \text{Tier Price} \times \text{Tier Count} $$</div>
+        <button class="copy-btn" onclick="copyFormula('\text{Tier Revenue} = \text{Tier Price} \times \text{Tier Count}', this)">کپی</button>
+    </div>
+</div>
+
+<div class="metric-card">
+    <h3>۲. سهم درآمد هر سطح تعرفه (Tier Revenue Share %)</h3>
+    <div class="explanation">
+        درصد سهم هر پلن از کل درآمد اشتراکی کسب‌وکار.<br>
+        <strong>کاربرد:</strong> شناسایی پلن‌های پرطرفدار، تحلیل وابستگی درآمد به یک پلن خاص، و برنامه‌ریزی کمپین‌های Upsell برای پلن‌های بالاتر.
+    </div>
+    <div class="vars">
+        <div class="var-badge"><span>TierRevenue</span> درآمد پلن موردنظر</div>
+        <div class="var-badge"><span>SUM(AllTierRevenue)</span> جمع درآمد همه پلن‌ها</div>
+    </div>
+    <div class="formula-wrap">
+        <div class="formula">$$ \text{Tier Revenue Share (\%)} = \left( \frac{\text{Tier Revenue}}{\sum \text{All Tier Revenue}} \right) \times 100 $$</div>
+        <button class="copy-btn" onclick="copyFormula('\text{Tier Revenue Share (\%)} = \left( \frac{\text{Tier Revenue}}{\sum \text{All Tier Revenue}} \right) \times 100', this)">کپی</button>
+    </div>
+</div>
+
+<div class="metric-card">
+    <h3>۳. میانگین قیمت وزنی (WAP — Weighted Average Price)</h3>
+    <div class="explanation">
+        میانگین قیمتی که هر مشترک در واقعیت پرداخت می‌کند؛ بر اساس توزیع واقعی مشترکان بین پلن‌های مختلف محاسبه می‌شود (نه صرفاً میانگین ساده قیمت‌ها).<br>
+        <strong>کاربرد:</strong> پیش‌بینی دقیق‌تر MRR، تحلیل اثر تغییر قیمت، مقایسه هوشمند بین دوره‌های مختلف.<br>
+        <strong>مثال:</strong> اگر ۸۰٪ مشترکان پلن ارزان و ۲۰٪ پلن گران دارند، WAP به قیمت پلن ارزان نزدیک‌تر خواهد بود.
+    </div>
+    <div class="vars">
+        <div class="var-badge"><span>TierPrice_plan</span> قیمت هر پلن</div>
+        <div class="var-badge"><span>TierCount_plan</span> تعداد مشترکان هر پلن</div>
+    </div>
+    <div class="formula-wrap">
+        <div class="formula">$$ \text{WAP} = \frac{\displaystyle\sum_{\text{plan}} \bigl( \text{Tier Price}_{\text{plan}} \times \text{Tier Count}_{\text{plan}} \bigr)}{\displaystyle\sum_{\text{plan}} \text{Tier Count}_{\text{plan}}} $$</div>
+        <button class="copy-btn" onclick="copyFormula('\text{WAP} = \frac{\sum_{\text{plan}} ( \text{TierPrice}_{\text{plan}} \times \text{TierCount}_{\text{plan}} )}{\sum_{\text{plan}} \text{TierCount}_{\text{plan}}}', this)">کپی</button>
+    </div>
+</div>
+
+
+<!-- ===== بخش پنجم ===== -->
+<div class="page-break"></div>
+<h2>بخش پنجم: تحلیل هزینه‌ها و روش‌های پرداخت</h2>
+
+<div class="metric-card">
+    <h3>۱. نسبت هزینه به درآمد (Cost to Revenue %)</h3>
+    <div class="explanation">
+        نشان می‌دهد از هر ۱۰۰ تومان درآمد، چند تومان صرف هزینه‌های عملیاتی می‌شود.<br>
+        <strong>تفسیر:</strong> عدد پایین‌تر بهتر است. اگر این نسبت بالای ۱۰۰٪ باشد یعنی کسب‌وکار زیان‌ده است.<br>
+        <strong>کاربرد:</strong> مقایسه کارایی دوره‌های مختلف، ارزیابی اثر کاهش هزینه‌ها، و تصمیم‌گیری برای بهینه‌سازی هزینه‌ها.
+    </div>
+    <div class="vars">
+        <div class="var-badge"><span>Cost</span> هزینه کل یا یک دسته هزینه</div>
+        <div class="var-badge"><span>Revenue</span> درآمد ناخالص</div>
+    </div>
+    <div class="formula-wrap">
+        <div class="formula">$$ \text{Cost To Revenue (\%)} = \left( \frac{\text{Cost}}{\text{Revenue}} \right) \times 100 $$</div>
+        <button class="copy-btn" onclick="copyFormula('\text{Cost To Revenue (\%)} = \left( \frac{\text{Cost}}{\text{Revenue}} \right) \times 100', this)">کپی</button>
+    </div>
+</div>
+
+<div class="metric-card">
+    <h3>۲. نسبت و سهم روش‌های پرداخت (DCB vs IPG)</h3>
+    <div class="explanation">
+        <strong>DCB (Direct Carrier Billing):</strong> پرداخت مستقیم از اعتبار سیم‌کارت. معمولاً کارمزد بالاتری دارد ولی نرخ تبدیل بهتری برای کاربران موبایل‌فرست.<br>
+        <strong>IPG (Internet Payment Gateway):</strong> پرداخت از طریق درگاه اینترنتی (کارت بانکی). کارمزد پایین‌تر ولی نیاز به کارت بانکی دارد.<br>
+        <strong>Ratio:</strong> عدد بالاتر از ۱ یعنی DCB غالب؛ پایین‌تر از ۱ یعنی IPG غالب است.<br>
+        <strong>کاربرد سهم:</strong> بهینه‌سازی استراتژی پرداخت، مذاکره با PSP برای کاهش کارمزد، و ارزیابی رفتار کاربران.
+    </div>
+    <div class="vars">
+        <div class="var-badge"><span>DCB_Revenue</span> درآمد از طریق DCB</div>
+        <div class="var-badge"><span>IPG_Revenue</span> درآمد از طریق IPG</div>
+        <div class="var-badge"><span>TotalPaymentRevenue</span> DCB_Revenue + IPG_Revenue</div>
+    </div>
+    <div class="formula-wrap">
+        <div class="formula">$$ \text{DCB to IPG Ratio} = \frac{\text{DCB Revenue}}{\text{IPG Revenue}} $$</div>
+        <button class="copy-btn" onclick="copyFormula('\text{DCB to IPG Ratio} = \frac{\text{DCB Revenue}}{\text{IPG Revenue}}', this)">کپی</button>
+    </div>
+    <div class="formula-wrap">
+        <div class="formula">$$ \text{DCB Share (\%)} = \left( \frac{\text{DCB Revenue}}{\text{Total Payment Revenue}} \right) \times 100 $$</div>
+        <button class="copy-btn" onclick="copyFormula('\text{DCB Share (\%)} = \left( \frac{\text{DCB Revenue}}{\text{Total Payment Revenue}} \right) \times 100', this)">کپی</button>
+    </div>
+    <div class="formula-wrap">
+        <div class="formula">$$ \text{IPG Share (\%)} = \left( \frac{\text{IPG Revenue}}{\text{Total Payment Revenue}} \right) \times 100 $$</div>
+        <button class="copy-btn" onclick="copyFormula('\text{IPG Share (\%)} = \left( \frac{\text{IPG Revenue}}{\text{Total Payment Revenue}} \right) \times 100', this)">کپی</button>
+    </div>
+</div>
+
+<script>
+    function copyFormula(latex, btn) {
+        const doSuccess = () => {
+            btn.textContent = '✓ کپی شد';
+            btn.classList.add('copied');
+            showToast();
+            setTimeout(() => {
+                btn.textContent = 'کپی';
+                btn.classList.remove('copied');
+            }, 2000);
+        };
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(latex).then(doSuccess).catch(() => fallbackCopy(latex, doSuccess));
+        } else {
+            fallbackCopy(latex, doSuccess);
+        }
+    }
+
+    function fallbackCopy(text, cb) {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.focus();
+        ta.select();
+        try { document.execCommand('copy'); cb(); } catch(e) {}
+        document.body.removeChild(ta);
+    }
+
+    function showToast() {
+        const t = document.getElementById('toast');
+        t.classList.add('show');
+        clearTimeout(t._timer);
+        t._timer = setTimeout(() => t.classList.remove('show'), 2200);
+    }
+</script>
+
+</body>
+</html>
