@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>گزارش تحلیلی بازار VOD ایران </title>
+  <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet">
+  <style>
+    :root {
+      --color-text-primary: #e8ecf4;
+      --color-text-secondary: #8899aa;
+      --color-background-primary: #12121f;
+      --color-background-secondary: #1a1a2e;
+      --color-border-tertiary: rgba(100, 130, 200, 0.15);
+      --page-padding: 1rem;
+      --card-radius: 14px;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      font-family: Vazirmatn, Tahoma, sans-serif;
+    }
+
+    html {
+      -webkit-text-size-adjust: 100%;
+      font-family: Vazirmatn, Tahoma, sans-serif;
+    }
+
+    body {
+      font-family: Vazirmatn, Tahoma, sans-serif;
+      direction: rtl;
+      margin: 0;
+      padding: var(--page-padding);
+      background: #0d0d18;
+      color: var(--color-text-primary);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    .page {
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      border-radius: var(--card-radius);
+      padding: 1.5rem 1rem;
+      margin-bottom: 1.25rem;
+      color: #fff;
+      text-align: center;
+    }
+
+    .hero-title {
+      font-size: clamp(1.15rem, 4.5vw, 1.75rem);
+      font-weight: 700;
+      margin: 0 0 0.5rem;
+      color: #fff;
+      line-height: 1.4;
+    }
+
+    .hero-sub {
+      font-size: clamp(0.8rem, 3vw, 0.95rem);
+      color: #a8b8d8;
+      margin: 0;
+      line-height: 1.6;
+    }
+
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-bottom: 1.25rem;
+    }
+
+    .metric-card {
+      background: #1a1a2e;
+      border-radius: 12px;
+      padding: 1rem 0.75rem;
+      text-align: center;
+      border: 1px solid rgba(100, 130, 200, 0.2);
+      min-width: 0;
+    }
+
+    .metric-num {
+      font-size: clamp(1.1rem, 4vw, 1.375rem);
+      font-weight: 700;
+      color: #7eb3ff;
+      display: block;
+      margin-bottom: 4px;
+      word-break: break-word;
+    }
+
+    .metric-label {
+      font-size: clamp(0.65rem, 2.5vw, 0.75rem);
+      color: #8899aa;
+      line-height: 1.5;
+    }
+
+    .section-title {
+      font-size: clamp(0.95rem, 3.5vw, 1.0625rem);
+      font-weight: 700;
+      color: var(--color-text-primary);
+      margin: 1.25rem 0 0.875rem;
+      padding-right: 10px;
+      border-right: 4px solid #4a6fa5;
+    }
+
+    .platform-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      margin-bottom: 1.25rem;
+    }
+
+    .platform-card {
+      background: var(--color-background-primary);
+      border-radius: var(--card-radius);
+      border: 0.5px solid var(--color-border-tertiary);
+      padding: 1rem;
+      min-width: 0;
+    }
+
+    .platform-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .platform-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .platform-name {
+      font-size: 0.9375rem;
+      font-weight: 700;
+      color: var(--color-text-primary);
+      margin: 0;
+    }
+
+    .platform-type {
+      font-size: 0.6875rem;
+      color: var(--color-text-secondary);
+      margin: 0;
+      line-height: 1.4;
+    }
+
+    .stat-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 8px;
+      padding: 7px 0;
+      border-bottom: 0.5px solid var(--color-border-tertiary);
+    }
+
+    .stat-row:last-child {
+      border-bottom: none;
+    }
+
+    .stat-label {
+      font-size: 0.75rem;
+      color: var(--color-text-secondary);
+      flex-shrink: 0;
+    }
+
+    .stat-value {
+      font-size: 0.8125rem;
+      font-weight: 500;
+      color: var(--color-text-primary);
+      text-align: left;
+      word-break: break-word;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.6875rem;
+      font-weight: 500;
+      margin-top: 6px;
+      line-height: 1.5;
+    }
+
+    .badge-red { background: #3d1515; color: #ff8888; }
+    .badge-yellow { background: #2d2200; color: #ffc060; }
+    .badge-green { background: #0a2a1a; color: #60d090; }
+
+    .chart-section {
+      background: var(--color-background-primary);
+      border-radius: var(--card-radius);
+      border: 0.5px solid var(--color-border-tertiary);
+      padding: 1rem;
+      margin-bottom: 1.25rem;
+      overflow: hidden;
+    }
+
+    .legend-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 12px;
+      margin-bottom: 12px;
+      justify-content: center;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.75rem;
+      color: var(--color-text-secondary);
+      white-space: nowrap;
+    }
+
+    .legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 2px;
+      flex-shrink: 0;
+    }
+
+    .chart-wrap {
+      position: relative;
+      width: 100%;
+      height: clamp(200px, 50vw, 260px);
+      min-height: 200px;
+    }
+
+    .aparatus-note {
+      background: var(--color-background-secondary);
+      border-radius: 10px;
+      border-right: 4px solid #4a6fa5;
+      padding: 12px 14px;
+      font-size: clamp(0.8rem, 3vw, 0.8125rem);
+      color: var(--color-text-secondary);
+      margin-top: 0.5rem;
+      line-height: 1.7;
+    }
+
+    @media (min-width: 480px) {
+      :root {
+        --page-padding: 1.25rem;
+      }
+
+      .hero {
+        padding: 2rem 1.5rem;
+      }
+
+      .metrics-grid {
+        gap: 12px;
+      }
+
+      .metric-card {
+        padding: 1.2rem 1rem;
+      }
+    }
+
+    @media (min-width: 640px) {
+      .platform-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+      }
+
+      .platform-card {
+        padding: 1.2rem;
+      }
+
+      .chart-section {
+        padding: 1.2rem;
+      }
+    }
+
+    @media (min-width: 768px) {
+      :root {
+        --page-padding: 1.5rem;
+      }
+
+      .hero {
+        padding: 2.5rem 2rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .metrics-grid {
+        grid-template-columns: repeat(4, 1fr);
+        margin-bottom: 1.5rem;
+      }
+
+      .platform-grid {
+        margin-bottom: 1.5rem;
+      }
+
+      .section-title {
+        margin: 1.5rem 0 1rem;
+        padding-right: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <h2 class="sr-only">گزارش تحلیلی بازار VOD ایران </h2>
+
+    <div class="hero">
+      <p class="hero-title">📊 تحلیل بازار VOD ایران </p>
+      <p class="hero-sub">مقایسه پلتفرم‌های پخش ویدیو بر اساس درآمد، کاربر و سودآوری</p>
+    </div>
+
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <span class="metric-num">۶,۰۰۰</span>
+        <span class="metric-label">کل بازار VOD (میلیارد تومان)</span>
+      </div>
+      <div class="metric-card">
+        <span class="metric-num">۱۳.۵M</span>
+        <span class="metric-label">کاربران SVOD</span>
+      </div>
+      <div class="metric-card">
+        <span class="metric-num">۵۰٪</span>
+        <span class="metric-label">سهم فیلیمو از بازار SVOD</span>
+      </div>
+      <div class="metric-card">
+        <span class="metric-num">۶۸M</span>
+        <span class="metric-label">بازدیدکننده یکتا آپارات (ماهانه)</span>
+      </div>
+    </div>
+
+    <div class="section-title">مقایسه پلتفرم‌ها</div>
+
+    <div class="platform-grid">
+      <div class="platform-card">
+        <div class="platform-header">
+          <div class="platform-icon" style="background:#1a2e4a; color:#7eb3ff;">F</div>
+          <div>
+            <p class="platform-name">فیلیمو</p>
+            <p class="platform-type">SVOD — صبا ایده</p>
+          </div>
+        </div>
+        <div class="stat-row"><span class="stat-label">درآمد سالانه</span><span class="stat-value" style="color:#7eb3ff;">~۳,۰۰۰ میلیارد</span></div>
+        <div class="stat-row"><span class="stat-label">سهم بازار</span><span class="stat-value">~۵۰٪</span></div>
+        <div class="stat-row"><span class="stat-label">مخاطبان</span><span class="stat-value">~۶.۷ میلیون</span></div>
+        <div><span class="badge badge-yellow">سود: سربه‌سر یا منفی</span></div>
+      </div>
+
+      <div class="platform-card">
+        <div class="platform-header">
+          <div class="platform-icon" style="background:#2a1a3a; color:#b08aff;">F</div>
+          <div>
+            <p class="platform-name">فیلم‌نت</p>
+            <p class="platform-type">SVOD — گلرنگ</p>
+          </div>
+        </div>
+        <div class="stat-row"><span class="stat-label">درآمد سالانه</span><span class="stat-value" style="color:#b08aff;">۱,۲۰۰–۱,۵۰۰ میلیارد</span></div>
+        <div class="stat-row"><span class="stat-label">سهم بازار</span><span class="stat-value">~۲۰–۲۵٪</span></div>
+        <div class="stat-row"><span class="stat-label">مخاطبان</span><span class="stat-value">~۲.۷–۳.۴ میلیون</span></div>
+        <div><span class="badge badge-red">سود: احتمالاً زیان‌ده</span></div>
+      </div>
+
+      <div class="platform-card">
+        <div class="platform-header">
+          <div class="platform-icon" style="background:#1a3a2a; color:#60d090;">N</div>
+          <div>
+            <p class="platform-name">نماوا</p>
+            <p class="platform-type">SVOD — شاتل</p>
+          </div>
+        </div>
+        <div class="stat-row"><span class="stat-label">درآمد سالانه</span><span class="stat-value" style="color:#60d090;">۸۰۰–۱,۱۰۰ میلیارد</span></div>
+        <div class="stat-row"><span class="stat-label">سهم بازار</span><span class="stat-value">~۱۳–۱۸٪</span></div>
+        <div class="stat-row"><span class="stat-label">مخاطبان</span><span class="stat-value">~۱.۷–۲.۴ میلیون</span></div>
+        <div><span class="badge badge-yellow">سود: سربه‌سر یا زیان‌ده</span></div>
+      </div>
+
+      <div class="platform-card">
+        <div class="platform-header">
+          <div class="platform-icon" style="background:#3a2a1a; color:#ffb060;">A</div>
+          <div>
+            <p class="platform-name">آپارات</p>
+            <p class="platform-type">UGC + تبلیغات — صبا ایده</p>
+          </div>
+        </div>
+        <div class="stat-row"><span class="stat-label">درآمد سالانه</span><span class="stat-value" style="color:#ffb060;">۸۰۰–۱,۵۰۰ میلیارد</span></div>
+        <div class="stat-row"><span class="stat-label">مدل کسب‌وکار</span><span class="stat-value">تبلیغاتی</span></div>
+        <div class="stat-row"><span class="stat-label">مخاطبان</span><span class="stat-value">۶۸M بازدیدکننده یکتا</span></div>
+        <div><span class="badge badge-green">سود: ۱۵۰–۴۰۰ میلیارد (بهترین)</span></div>
+      </div>
+    </div>
+
+    <div class="section-title">مقایسه درآمد (میلیارد تومان)</div>
+    <div class="chart-section">
+      <div class="legend-row">
+        <div class="legend-item"><span class="legend-dot" style="background:#7eb3ff;"></span> فیلیمو</div>
+        <div class="legend-item"><span class="legend-dot" style="background:#b08aff;"></span> فیلم‌نت</div>
+        <div class="legend-item"><span class="legend-dot" style="background:#60d090;"></span> نماوا</div>
+        <div class="legend-item"><span class="legend-dot" style="background:#ffb060;"></span> آپارات</div>
+      </div>
+      <div class="chart-wrap">
+        <canvas id="revenueChart" role="img" aria-label="نمودار درآمد پلتفرم‌های VOD ایران">درآمد: فیلیمو ۳۰۰۰، فیلم‌نت ۱۳۵۰، نماوا ۹۵۰، آپارات ۱۱۵۰ میلیارد تومان</canvas>
+      </div>
+    </div>
+
+    <div class="section-title">سهم بازار SVOD</div>
+    <div class="chart-section">
+      <div class="legend-row">
+        <div class="legend-item"><span class="legend-dot" style="background:#7eb3ff;"></span> فیلیمو ۵۰٪</div>
+        <div class="legend-item"><span class="legend-dot" style="background:#b08aff;"></span> فیلم‌نت ۲۳٪</div>
+        <div class="legend-item"><span class="legend-dot" style="background:#60d090;"></span> نماوا ۱۶٪</div>
+        <div class="legend-item"><span class="legend-dot" style="background:#888;"></span> سایرین ۱۱٪</div>
+      </div>
+      <div class="chart-wrap">
+        <canvas id="shareChart" role="img" aria-label="سهم بازار SVOD ایران">فیلیمو ۵۰٪، فیلم‌نت ۲۳٪، نماوا ۱۶٪، سایرین ۱۱٪</canvas>
+      </div>
+    </div>
+
+    <div class="aparatus-note">
+      ⚡ آپارات با مدل تبلیغاتی و بدون هزینه تولید محتوا، بهترین حاشیه سود را در میان همه پلتفرم‌ها دارد — با اینکه قابل مقایسه مستقیم با SVOD‌ها نیست.
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+  <script>
+    const fontFamily = 'Vazirmatn';
+    const isMobile = window.matchMedia('(max-width: 639px)').matches;
+    const tickSize = isMobile ? 10 : 13;
+    const yTickSize = isMobile ? 9 : 11;
+
+    function initCharts() {
+    new Chart(document.getElementById('revenueChart'), {
+      type: 'bar',
+      data: {
+        labels: ['فیلیمو','فیلم‌نت','نماوا','آپارات'],
+        datasets: [{
+          data: [3000, 1350, 950, 1150],
+          backgroundColor: ['#7eb3ff','#b08aff','#60d090','#ffb060'],
+          borderRadius: 8,
+          borderSkipped: false
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          x: {
+            ticks: {
+              font: { family: fontFamily, size: tickSize },
+              color: '#aabbcc',
+              maxRotation: isMobile ? 45 : 0,
+              minRotation: isMobile ? 45 : 0
+            },
+            grid: { display: false }
+          },
+          y: {
+            ticks: {
+              font: { family: fontFamily, size: yTickSize },
+              color: '#8899aa'
+            },
+            grid: { color: 'rgba(100,130,180,0.1)' }
+          }
+        }
+      }
+    });
+
+    new Chart(document.getElementById('shareChart'), {
+      type: 'doughnut',
+      data: {
+        labels: ['فیلیمو','فیلم‌نت','نماوا','سایرین'],
+        datasets: [{
+          data: [50, 23, 16, 11],
+          backgroundColor: ['#7eb3ff','#b08aff','#60d090','#555566'],
+          borderWidth: 2,
+          borderColor: 'transparent'
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: isMobile ? '58%' : '65%',
+        plugins: { legend: { display: false } }
+      }
+    });
+
+    }
+
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(initCharts);
+    } else {
+      initCharts();
+    }
+
+    window.addEventListener('resize', () => {
+      Chart.getChart('revenueChart')?.resize();
+      Chart.getChart('shareChart')?.resize();
+    });
+  </script>
+</body>
+</html>
