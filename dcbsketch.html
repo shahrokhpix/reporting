@@ -124,9 +124,29 @@
     border-radius:32px;
     overflow:hidden;
     min-height:640px;
+    max-height:640px;
     display:flex;
     flex-direction:column;
     position:relative;
+  }
+  /* FIX: this wrapper holds .topbar + .body for each screen.
+     It must itself be a flex column that fills the phone screen,
+     otherwise .body's flex:1/overflow-y:auto have no effect and
+     tall screens (like step 1) get silently clipped by .screen's
+     overflow:hidden instead of scrolling. */
+  #screenContent{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    min-height:0;
+  }
+  .section-title{
+    font-size:12px;
+    font-weight:700;
+    color:var(--muted);
+    margin:2px 0 0;
+    padding-bottom:2px;
+    border-bottom:1px solid var(--line);
   }
   .notch{
     position:absolute;
@@ -141,6 +161,7 @@
     padding:30px 20px 22px;
     color:#fff;
     position:relative;
+    flex:0 0 auto;
   }
   .topbar .carrier{
     display:flex; align-items:center; gap:8px;
@@ -153,12 +174,14 @@
   .topbar .sub{font-size:12px; opacity:.85; margin:0;}
 
   .body{
-    flex:1;
+    flex:1 1 auto;
+    min-height:0;
     padding:20px 18px 22px;
     display:flex;
     flex-direction:column;
     gap:14px;
     overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
   }
 
   .card-row{
@@ -170,6 +193,7 @@
     justify-content:space-between;
     align-items:center;
     font-size:13px;
+    flex:0 0 auto;
   }
   .card-row .k{color:var(--muted); font-weight:500;}
   .card-row .v{color:var(--navy); font-weight:700;}
@@ -185,6 +209,7 @@
     padding:0 14px;
     background:#fff;
     transition:.2s;
+    flex:0 0 auto;
   }
   .input-wrap:focus-within{border-color:var(--blue); box-shadow:0 0 0 3px #E9F1FF;}
   .input-wrap input{
@@ -196,6 +221,7 @@
 
   .otp-row{
     display:flex; gap:8px; direction:ltr;
+    flex:0 0 auto;
   }
   .otp-row input{
     width:100%; aspect-ratio:1/1; text-align:center;
@@ -208,6 +234,7 @@
   .timer-line{
     display:flex; justify-content:space-between; align-items:center;
     font-size:12px; color:var(--muted);
+    flex:0 0 auto;
   }
   .timer-line b{color:var(--blue); font-weight:700;}
 
@@ -215,11 +242,12 @@
     display:flex; align-items:flex-start; gap:10px;
     font-size:12px; color:var(--muted); line-height:1.9;
     background:#F6F9FF; border:1px solid var(--line); border-radius:14px; padding:12px 14px;
+    flex:0 0 auto;
   }
   .terms input{margin-top:3px; accent-color:var(--blue);}
   .terms a{color:var(--blue); font-weight:600; text-decoration:none;}
 
-  .spacer{flex:1;}
+  .spacer{flex:1 1 auto; min-height:8px;}
 
   .btn{
     width:100%;
@@ -227,6 +255,7 @@
     padding:15px;
     font-family:inherit; font-size:14.5px; font-weight:700;
     cursor:pointer; transition:.2s;
+    flex:0 0 auto;
   }
   .btn-primary{background:var(--grad); color:#fff;}
   .btn-primary:disabled{opacity:.45; cursor:not-allowed;}
@@ -238,17 +267,19 @@
     display:flex;align-items:center;justify-content:center;
     margin:6px auto 4px;
     font-size:28px;
+    flex:0 0 auto;
   }
   .result-icon.ok{background:#E5F7EF; color:var(--success);}
   .result-icon.fail{background:#FBEAEA; color:var(--danger);}
-  .result-title{text-align:center; font-size:16px; font-weight:800; margin:0;}
+  .result-title{text-align:center; font-size:16px; font-weight:800; margin:0; flex:0 0 auto;}
   .result-title.ok{color:var(--success);}
   .result-title.fail{color:var(--danger);}
-  .result-sub{text-align:center; font-size:12.5px; color:var(--muted); line-height:2; margin:0;}
+  .result-sub{text-align:center; font-size:12.5px; color:var(--muted); line-height:2; margin:0; flex:0 0 auto;}
 
   .sms-preview{
     background:#F6F9FF; border:1px dashed #C7D6F5; border-radius:14px;
     padding:12px 14px; font-size:11.5px; color:var(--navy); line-height:2;
+    flex:0 0 auto;
   }
   .sms-preview .tag{
     display:inline-block; background:var(--blue); color:#fff; font-size:10px;
@@ -306,20 +337,10 @@
     <button class="toggle-fail" id="failToggle">حالت پرداخت ناموفق</button>
   </div>
 
-  <div class="legend">
-    <b>راهنمای پالت رنگی همراه اول</b> — گرادینت آبی سرمه‌ای تا آبی روشن (اعتماد و شفافیت)، سبز برای موفقیت، قرمز برای خطا، خاکستری مه‌آلود برای متن ثانویه.
-    <div class="swatches">
-      <div class="sw" style="background:#0B2545"></div>
-      <div class="sw" style="background:#1464F4"></div>
-      <div class="sw" style="background:#00C2E8"></div>
-      <div class="sw" style="background:#1BA672"></div>
-      <div class="sw" style="background:#E24C4C"></div>
-      <div class="sw" style="background:#7C8AA3"></div>
-    </div>
-  </div>
+  
 
 <script>
-const steps = ["اطلاعات سرویس","شماره موبایل","کد تایید","تایید پرداخت","نتیجه"];
+const steps = ["اطلاعات","کد تایید","تایید پرداخت","نتیجه"];
 let current = 0;
 let isFail = false;
 
@@ -343,31 +364,26 @@ function screen0(){
     <div class="topbar">
       <div class="carrier"><span class="dot"></span> همراه اول · پلتفرم پرداخت اپراتوری</div>
       <h2>فعال‌سازی اشتراک فیلیمو</h2>
-      <p class="sub">پیش از پرداخت، جزئیات سرویس را بررسی کنید</p>
+      <p class="sub">اطلاعات سرویس را بررسی کنید و شماره موبایل خود را وارد کنید</p>
     </div>
     <div class="body">
+      <p class="section-title">اطلاعات سرویس</p>
       <div class="card-row"><span class="k">سرویس</span><span class="v">اشتراک یک ماهه فیلیمو</span></div>
       <div class="card-row"><span class="k">مدت اعتبار</span><span class="v">۳۰ روز</span></div>
       <div class="card-row"><span class="k">هزینه سرویس</span><span class="v">۲۱۸,۰۰۰ تومان</span></div>
       <div class="card-row"><span class="k">مالیات بر ارزش افزوده</span><span class="v">۱۰٪</span></div>
       <div class="card-row total"><span class="k">مبلغ قابل پرداخت</span><span class="v">۲۳۹,۸۰۰ تومان</span></div>
-      <div class="terms" style="margin-top:4px;">
+      <div class="terms" style="margin-top:2px;">
         هزینه سرویس از طریق شارژ اعتبار خدمات محتوایی یا صورت‌حساب شما کسر خواهد شد. در صورت عدم شارژ کافی، ۵ روز مهلت گراس برای شما فعال می‌شود.
       </div>
-      <div class="spacer"></div>
-      <button class="btn btn-primary" onclick="go(1)">ادامه و ورود شماره موبایل</button>
-    </div>
-  `;
-}
 
-function screen1(){
-  return `
-    <div class="topbar">
-      <div class="carrier"><span class="dot"></span> همراه اول · پلتفرم پرداخت اپراتوری</div>
-      <h2>شماره موبایل خود را وارد کنید</h2>
-      <p class="sub">کد تایید برای این شماره پیامک می‌شود</p>
-    </div>
-    <div class="body">
+      <p class="section-title">قوانین و مقررات</p>
+      <label class="terms">
+        <input type="checkbox" checked>
+        <span>قوانین و مقررات پرداخت اپراتوری و <a href="#">شرایط اشتراک فیلیمو</a> را می‌پذیرم.</span>
+      </label>
+
+      <p class="section-title">شماره موبایل</p>
       <div class="field-label">شماره موبایل</div>
       <div class="input-wrap">
         <span class="prefix">IR (+98)</span>
@@ -376,13 +392,13 @@ function screen1(){
       <div class="terms">
         با ادامه، شما تایید می‌کنید که مالک این شماره هستید و اجازه فعال‌سازی سرویس روی آن را دارید.
       </div>
-      <div class="spacer"></div>
-      <button class="btn btn-primary" onclick="go(2)">ارسال کد تایید</button>
+
+      <button class="btn btn-primary" onclick="go(1)">ارسال کد تایید</button>
     </div>
   `;
 }
 
-function screen2(){
+function screen1(){
   return `
     <div class="topbar">
       <div class="carrier"><span class="dot"></span> همراه اول · پلتفرم پرداخت اپراتوری</div>
@@ -398,12 +414,12 @@ function screen2(){
         <span class="btn-ghost" style="cursor:pointer;">ارسال مجدد</span>
       </div>
       <div class="spacer"></div>
-      <button class="btn btn-primary" onclick="go(3)">تایید کد</button>
+      <button class="btn btn-primary" onclick="go(2)">تایید کد</button>
     </div>
   `;
 }
 
-function screen3(){
+function screen2(){
   return `
     <div class="topbar">
       <div class="carrier"><span class="dot"></span> همراه اول · پلتفرم پرداخت اپراتوری</div>
@@ -412,18 +428,15 @@ function screen3(){
     </div>
     <div class="body">
       <div class="card-row"><span class="k">سرویس</span><span class="v">اشتراک یک ماهه فیلیمو</span></div>
+      <div class="card-row"><span class="k">شماره موبایل</span><span class="v">0912•••6789</span></div>
       <div class="card-row total"><span class="k">مبلغ قابل پرداخت</span><span class="v">۲۳۹,۸۰۰ تومان</span></div>
-      <label class="terms">
-        <input type="checkbox" checked>
-        <span>قوانین و مقررات پرداخت اپراتوری و <a href="#">شرایط اشتراک فیلیمو</a> را می‌پذیرم.</span>
-      </label>
       <div class="spacer"></div>
-      <button class="btn btn-primary" onclick="go(4)">پرداخت و فعال‌سازی</button>
+      <button class="btn btn-primary" onclick="go(3)">پرداخت و فعال‌سازی</button>
     </div>
   `;
 }
 
-function screen4(){
+function screen3(){
   if(isFail){
     return `
       <div class="topbar">
@@ -460,14 +473,14 @@ function screen4(){
   `;
 }
 
-const renderers = [screen0, screen1, screen2, screen3, screen4];
+const renderers = [screen0, screen1, screen2, screen3];
 
 function render(){
   renderStepper();
   screenEl.innerHTML = renderers[current]();
   prevBtn.disabled = current === 0;
   nextBtn.disabled = current === steps.length - 1;
-  failToggle.style.display = current === 4 ? 'none' : 'inline-block';
+  failToggle.style.display = current === 3 ? 'none' : 'inline-block';
 }
 
 function go(i){
@@ -479,7 +492,7 @@ prevBtn.addEventListener('click', ()=> go(current - 1));
 nextBtn.addEventListener('click', ()=> go(current + 1));
 failToggle.addEventListener('click', ()=>{
   isFail = true;
-  go(4);
+  go(3);
 });
 
 render();
