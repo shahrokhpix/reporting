@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>اسکچ فرانت | پلتفرم DCB - همراه اول</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#0B2545;
+    --blue:#1464F4;
+    --cyan:#00C2E8;
+    --grad: linear-gradient(135deg, #0B2545 0%, #1464F4 60%, #00C2E8 100%);
+    --bg:#EEF2F9;
+    --card:#FFFFFF;
+    --line:#E2E8F3;
+    --muted:#7C8AA3;
+    --ink:#0F1E36;
+    --success:#1BA672;
+    --danger:#E24C4C;
+    --warn:#F2A900;
+    --radius:20px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:'Vazirmatn', Tahoma, sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    padding:32px 16px 60px;
+  }
+
+  .page-head{
+    text-align:center;
+    max-width:640px;
+    margin-bottom:22px;
+  }
+  .page-head .eyebrow{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    font-size:12.5px;
+    color:var(--blue);
+    background:#E9F1FF;
+    border:1px solid #D3E4FF;
+    padding:5px 14px;
+    border-radius:100px;
+    font-weight:600;
+  }
+  .page-head h1{
+    font-size:20px;
+    margin:12px 0 6px;
+    font-weight:800;
+  }
+  .page-head p{
+    font-size:13.5px;
+    color:var(--muted);
+    line-height:2;
+    margin:0;
+  }
+
+  /* progress */
+  .stepper{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+    margin:22px 0 26px;
+    max-width:480px;
+    width:100%;
+  }
+  .step-dot{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:8px;
+    position:relative;
+  }
+  .step-dot .circle{
+    width:26px;height:26px;border-radius:50%;
+    background:#fff;
+    border:2px solid var(--line);
+    display:flex;align-items:center;justify-content:center;
+    font-size:11.5px;font-weight:700;color:var(--muted);
+    transition:.25s;
+  }
+  .step-dot::before{
+    content:'';
+    position:absolute;
+    top:13px; right:50%;
+    width:100%; height:2px;
+    background:var(--line);
+    z-index:0;
+  }
+  .step-dot:first-child::before{display:none;}
+  .step-dot .label{
+    font-size:10.5px;
+    color:var(--muted);
+    font-weight:600;
+    text-align:center;
+  }
+  .step-dot.active .circle{background:var(--blue); border-color:var(--blue); color:#fff;}
+  .step-dot.active .label{color:var(--navy);}
+  .step-dot.done .circle{background:var(--success); border-color:var(--success); color:#fff;}
+  .step-dot.done::before{background:var(--success);}
+
+  /* phone frame */
+  .phone{
+    width:360px;
+    max-width:92vw;
+    background:#000;
+    border-radius:44px;
+    padding:12px;
+    box-shadow:0 30px 60px -20px rgba(11,37,69,.35), 0 4px 12px rgba(11,37,69,.15);
+  }
+  .screen{
+    background:var(--card);
+    border-radius:32px;
+    overflow:hidden;
+    min-height:640px;
+    display:flex;
+    flex-direction:column;
+    position:relative;
+  }
+  .notch{
+    position:absolute;
+    top:0; left:50%; transform:translateX(-50%);
+    width:120px; height:22px;
+    background:#000;
+    border-radius:0 0 16px 16px;
+    z-index:5;
+  }
+  .topbar{
+    background:var(--grad);
+    padding:30px 20px 22px;
+    color:#fff;
+    position:relative;
+  }
+  .topbar .carrier{
+    display:flex; align-items:center; gap:8px;
+    font-size:12px; font-weight:700; opacity:.9;
+  }
+  .carrier .dot{width:6px;height:6px;border-radius:50%;background:#fff;}
+  .topbar h2{
+    font-size:16px; margin:14px 0 4px; font-weight:800;
+  }
+  .topbar .sub{font-size:12px; opacity:.85; margin:0;}
+
+  .body{
+    flex:1;
+    padding:20px 18px 22px;
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+    overflow-y:auto;
+  }
+
+  .card-row{
+    background:#F6F9FF;
+    border:1px solid var(--line);
+    border-radius:16px;
+    padding:14px 16px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    font-size:13px;
+  }
+  .card-row .k{color:var(--muted); font-weight:500;}
+  .card-row .v{color:var(--navy); font-weight:700;}
+  .card-row.total .v{color:var(--blue); font-size:15px;}
+
+  .field-label{
+    font-size:12.5px; font-weight:700; color:var(--navy); margin-bottom:6px;
+  }
+  .input-wrap{
+    display:flex; align-items:center;
+    border:1.5px solid var(--line);
+    border-radius:14px;
+    padding:0 14px;
+    background:#fff;
+    transition:.2s;
+  }
+  .input-wrap:focus-within{border-color:var(--blue); box-shadow:0 0 0 3px #E9F1FF;}
+  .input-wrap input{
+    border:0; outline:0; flex:1; padding:13px 8px;
+    font-family:inherit; font-size:14.5px; background:transparent; color:var(--ink);
+    direction:ltr; text-align:right;
+  }
+  .input-wrap .prefix{color:var(--muted); font-size:13px; font-weight:600;}
+
+  .otp-row{
+    display:flex; gap:8px; direction:ltr;
+  }
+  .otp-row input{
+    width:100%; aspect-ratio:1/1; text-align:center;
+    border:1.5px solid var(--line); border-radius:12px;
+    font-size:18px; font-weight:700; color:var(--navy);
+    outline:0;
+  }
+  .otp-row input:focus{border-color:var(--blue); box-shadow:0 0 0 3px #E9F1FF;}
+
+  .timer-line{
+    display:flex; justify-content:space-between; align-items:center;
+    font-size:12px; color:var(--muted);
+  }
+  .timer-line b{color:var(--blue); font-weight:700;}
+
+  .terms{
+    display:flex; align-items:flex-start; gap:10px;
+    font-size:12px; color:var(--muted); line-height:1.9;
+    background:#F6F9FF; border:1px solid var(--line); border-radius:14px; padding:12px 14px;
+  }
+  .terms input{margin-top:3px; accent-color:var(--blue);}
+  .terms a{color:var(--blue); font-weight:600; text-decoration:none;}
+
+  .spacer{flex:1;}
+
+  .btn{
+    width:100%;
+    border:0; border-radius:14px;
+    padding:15px;
+    font-family:inherit; font-size:14.5px; font-weight:700;
+    cursor:pointer; transition:.2s;
+  }
+  .btn-primary{background:var(--grad); color:#fff;}
+  .btn-primary:disabled{opacity:.45; cursor:not-allowed;}
+  .btn-primary:not(:disabled):hover{filter:brightness(1.06); transform:translateY(-1px);}
+  .btn-ghost{background:transparent; color:var(--blue); font-size:12.5px; padding:6px;}
+
+  .result-icon{
+    width:64px;height:64px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    margin:6px auto 4px;
+    font-size:28px;
+  }
+  .result-icon.ok{background:#E5F7EF; color:var(--success);}
+  .result-icon.fail{background:#FBEAEA; color:var(--danger);}
+  .result-title{text-align:center; font-size:16px; font-weight:800; margin:0;}
+  .result-title.ok{color:var(--success);}
+  .result-title.fail{color:var(--danger);}
+  .result-sub{text-align:center; font-size:12.5px; color:var(--muted); line-height:2; margin:0;}
+
+  .sms-preview{
+    background:#F6F9FF; border:1px dashed #C7D6F5; border-radius:14px;
+    padding:12px 14px; font-size:11.5px; color:var(--navy); line-height:2;
+  }
+  .sms-preview .tag{
+    display:inline-block; background:var(--blue); color:#fff; font-size:10px;
+    padding:2px 8px; border-radius:100px; margin-bottom:6px; font-weight:700;
+  }
+
+  /* controls under phone */
+  .controls{
+    display:flex; gap:10px; margin-top:26px; align-items:center;
+  }
+  .nav-btn{
+    background:var(--card); border:1.5px solid var(--line); color:var(--navy);
+    font-family:inherit; font-weight:700; font-size:13px;
+    padding:11px 20px; border-radius:100px; cursor:pointer; transition:.2s;
+    display:flex; align-items:center; gap:6px;
+  }
+  .nav-btn:hover{border-color:var(--blue); color:var(--blue);}
+  .nav-btn:disabled{opacity:.4; cursor:not-allowed;}
+  .toggle-fail{
+    background:#fff; border:1.5px dashed var(--danger); color:var(--danger);
+    font-family:inherit; font-weight:700; font-size:12px;
+    padding:9px 16px; border-radius:100px; cursor:pointer;
+  }
+
+  .legend{
+    margin-top:28px; max-width:480px; width:100%;
+    background:var(--card); border:1px solid var(--line); border-radius:16px;
+    padding:16px 18px; font-size:12px; color:var(--muted); line-height:2.1;
+  }
+  .legend b{color:var(--navy);}
+  .swatches{display:flex; gap:8px; margin-top:10px;}
+  .sw{width:26px;height:26px;border-radius:8px; border:1px solid rgba(0,0,0,.06);}
+</style>
+</head>
+<body>
+
+  <div class="page-head">
+    <span class="eyebrow">● سکچ فرانت — پلتفرم Hosted DCB</span>
+    <h1>فلوی عضویت اشتراک فیلیمو از طریق پرداخت اپراتوری</h1>
+    <p>این صفحات، صفحاتِ فرانتِ سمتِ پلتفرم DCB است که مشترک پس از کلیک روی «پرداخت اپراتوری» در اپ فیلیمو به آن ری‌دایرکت می‌شود. رنگ‌بندی بر اساس هویت بصری همراه اول (آبی) طراحی شده.</p>
+  </div>
+
+  <div class="stepper" id="stepper"></div>
+
+  <div class="phone">
+    <div class="screen">
+      <div class="notch"></div>
+      <div id="screenContent"></div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <button class="nav-btn" id="prevBtn">→ قبلی</button>
+    <button class="nav-btn" id="nextBtn">بعدی ←</button>
+    <button class="toggle-fail" id="failToggle">حالت پرداخت ناموفق</button>
+  </div>
+
+  <div class="legend">
+    <b>راهنمای پالت رنگی همراه اول</b> — گرادینت آبی سرمه‌ای تا آبی روشن (اعتماد و شفافیت)، سبز برای موفقیت، قرمز برای خطا، خاکستری مه‌آلود برای متن ثانویه.
+    <div class="swatches">
+      <div class="sw" style="background:#0B2545"></div>
+      <div class="sw" style="background:#1464F4"></div>
+      <div class="sw" style="background:#00C2E8"></div>
+      <div class="sw" style="background:#1BA672"></div>
+      <div class="sw" style="background:#E24C4C"></div>
+      <div class="sw" style="background:#7C8AA3"></div>
+    </div>
+  </div>
+
+<script>
+const steps = ["اطلاعات سرویس","شماره موبایل","کد تایید","تایید پرداخت","نتیجه"];
+let current = 0;
+let isFail = false;
+
+const stepperEl = document.getElementById('stepper');
+const screenEl = document.getElementById('screenContent');
+const prevBtn = document.getElementById('prevBtn');
+const nextBtn = document.getElementById('nextBtn');
+const failToggle = document.getElementById('failToggle');
+
+function renderStepper(){
+  stepperEl.innerHTML = steps.map((s,i)=>{
+    let cls = 'step-dot';
+    if(i < current) cls += ' done';
+    if(i === current) cls += ' active';
+    return `<div class="${cls}"><div class="circle">${i < current ? '✓' : i+1}</div><div class="label">${s}</div></div>`;
+  }).join('');
+}
+
+function screen0(){
+  return `
+    <div class="topbar">
+      <div class="carrier"><span class="dot"></span> همراه اول · پلتفرم پرداخت اپراتوری</div>
+      <h2>فعال‌سازی اشتراک فیلیمو</h2>
+      <p class="sub">پیش از پرداخت، جزئیات سرویس را بررسی کنید</p>
+    </div>
+    <div class="body">
+      <div class="card-row"><span class="k">سرویس</span><span class="v">اشتراک یک ماهه فیلیمو</span></div>
+      <div class="card-row"><span class="k">مدت اعتبار</span><span class="v">۳۰ روز</span></div>
+      <div class="card-row"><span class="k">هزینه سرویس</span><span class="v">۲۱۸,۰۰۰ تومان</span></div>
+      <div class="card-row"><span class="k">مالیات بر ارزش افزوده</span><span class="v">۱۰٪</span></div>
+      <div class="card-row total"><span class="k">مبلغ قابل پرداخت</span><span class="v">۲۳۹,۸۰۰ تومان</span></div>
+      <div class="terms" style="margin-top:4px;">
+        هزینه سرویس از طریق شارژ اعتبار خدمات محتوایی یا صورت‌حساب شما کسر خواهد شد. در صورت عدم شارژ کافی، ۵ روز مهلت گراس برای شما فعال می‌شود.
+      </div>
+      <div class="spacer"></div>
+      <button class="btn btn-primary" onclick="go(1)">ادامه و ورود شماره موبایل</button>
+    </div>
+  `;
+}
+
+function screen1(){
+  return `
+    <div class="topbar">
+      <div class="carrier"><span class="dot"></span> همراه اول · پلتفرم پرداخت اپراتوری</div>
+      <h2>شماره موبایل خود را وارد کنید</h2>
+      <p class="sub">کد تایید برای این شماره پیامک می‌شود</p>
+    </div>
+    <div class="body">
+      <div class="field-label">شماره موبایل</div>
+      <div class="input-wrap">
+        <span class="prefix">IR (+98)</span>
+        <input type="text" placeholder="09xx xxx xxxx" value="0912 345 6789">
+      </div>
+      <div class="terms">
+        با ادامه، شما تایید می‌کنید که مالک این شماره هستید و اجازه فعال‌سازی سرویس روی آن را دارید.
+      </div>
+      <div class="spacer"></div>
+      <button class="btn btn-primary" onclick="go(2)">ارسال کد تایید</button>
+    </div>
+  `;
+}
+
+function screen2(){
+  return `
+    <div class="topbar">
+      <div class="carrier"><span class="dot"></span> همراه اول · پلتفرم پرداخت اپراتوری</div>
+      <h2>کد تایید را وارد کنید</h2>
+      <p class="sub">کد ۴ رقمی به شماره 0912•••6789 پیامک شد</p>
+    </div>
+    <div class="body">
+      <div class="otp-row">
+        <input maxlength="1" value="4"><input maxlength="1" value="2"><input maxlength="1" value="9"><input maxlength="1">
+      </div>
+      <div class="timer-line">
+        <span>ارسال مجدد کد تا <b>۰۱:۵۸</b></span>
+        <span class="btn-ghost" style="cursor:pointer;">ارسال مجدد</span>
+      </div>
+      <div class="spacer"></div>
+      <button class="btn btn-primary" onclick="go(3)">تایید کد</button>
+    </div>
+  `;
+}
+
+function screen3(){
+  return `
+    <div class="topbar">
+      <div class="carrier"><span class="dot"></span> همراه اول · پلتفرم پرداخت اپراتوری</div>
+      <h2>تایید نهایی پرداخت</h2>
+      <p class="sub">لطفا اطلاعات را بررسی و تایید کنید</p>
+    </div>
+    <div class="body">
+      <div class="card-row"><span class="k">سرویس</span><span class="v">اشتراک یک ماهه فیلیمو</span></div>
+      <div class="card-row total"><span class="k">مبلغ قابل پرداخت</span><span class="v">۲۳۹,۸۰۰ تومان</span></div>
+      <label class="terms">
+        <input type="checkbox" checked>
+        <span>قوانین و مقررات پرداخت اپراتوری و <a href="#">شرایط اشتراک فیلیمو</a> را می‌پذیرم.</span>
+      </label>
+      <div class="spacer"></div>
+      <button class="btn btn-primary" onclick="go(4)">پرداخت و فعال‌سازی</button>
+    </div>
+  `;
+}
+
+function screen4(){
+  if(isFail){
+    return `
+      <div class="topbar">
+        <div class="carrier"><span class="dot"></span> همراه اول · پلتفرم پرداخت اپراتوری</div>
+        <h2>نتیجه پرداخت</h2>
+        <p class="sub">&nbsp;</p>
+      </div>
+      <div class="body" style="align-items:center; justify-content:center; text-align:center;">
+        <div class="result-icon fail">✕</div>
+        <p class="result-title fail">پرداخت ناموفق بود</p>
+        <p class="result-sub">اعتبار شما برای اعمال هزینه اشتراک کافی نبود.<br>در صورت شارژ سیم‌کارت طی ۵ روز آینده، سرویس فعال خواهد شد.</p>
+        <div class="spacer"></div>
+        <button class="btn btn-primary" onclick="go(0); isFail=false;">بازگشت به اپ فیلیمو</button>
+      </div>
+    `;
+  }
+  return `
+    <div class="topbar">
+      <div class="carrier"><span class="dot"></span> همراه اول · پلتفرم پرداخت اپراتوری</div>
+      <h2>نتیجه پرداخت</h2>
+      <p class="sub">&nbsp;</p>
+    </div>
+    <div class="body" style="align-items:center; text-align:center;">
+      <div class="result-icon ok">✓</div>
+      <p class="result-title ok">پرداخت با موفقیت انجام شد</p>
+      <p class="result-sub">اشتراک یک ماهه فیلیمو برای شما فعال شد.<br>اعتبار تا: ۱۴۰۵/۰۴/۱۹ ساعت ۱۶:۲۷</p>
+      <div class="sms-preview">
+        <span class="tag">پیامک ارسالی</span><br>
+        مشترک گرامی، سرویس «اشتراک یک ماهه فیلیمو» با هزینه ۲۱۸,۰۰۰ تومان + ۱۰٪ مالیات بر ارزش افزوده از طریق شارژ اعتبار خدمات محتوایی شما فعال شد.
+      </div>
+      <div class="spacer"></div>
+      <button class="btn btn-primary" onclick="go(0);">بازگشت به اپ فیلیمو</button>
+    </div>
+  `;
+}
+
+const renderers = [screen0, screen1, screen2, screen3, screen4];
+
+function render(){
+  renderStepper();
+  screenEl.innerHTML = renderers[current]();
+  prevBtn.disabled = current === 0;
+  nextBtn.disabled = current === steps.length - 1;
+  failToggle.style.display = current === 4 ? 'none' : 'inline-block';
+}
+
+function go(i){
+  current = Math.max(0, Math.min(steps.length - 1, i));
+  render();
+}
+
+prevBtn.addEventListener('click', ()=> go(current - 1));
+nextBtn.addEventListener('click', ()=> go(current + 1));
+failToggle.addEventListener('click', ()=>{
+  isFail = true;
+  go(4);
+});
+
+render();
+</script>
+</body>
+</html>
