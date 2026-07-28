@@ -340,7 +340,7 @@
   
 
 <script>
-const steps = ["اطلاعات","کد تایید","تایید پرداخت","نتیجه"];
+const steps = ["اطلاعات","کد تایید و پرداخت","نتیجه"];
 let current = 0;
 let isFail = false;
 
@@ -402,7 +402,7 @@ function screen1(){
   return `
     <div class="topbar">
       <div class="carrier"><span class="dot"></span> همراه اول · پلتفرم پرداخت اپراتوری</div>
-      <h2>کد تایید را وارد کنید</h2>
+      <h2>کد تایید و پرداخت</h2>
       <p class="sub">کد ۴ رقمی به شماره 0912•••6789 پیامک شد</p>
     </div>
     <div class="body">
@@ -413,30 +413,19 @@ function screen1(){
         <span>ارسال مجدد کد تا <b>۰۱:۵۸</b></span>
         <span class="btn-ghost" style="cursor:pointer;">ارسال مجدد</span>
       </div>
+
+      <p class="section-title">جزئیات پرداخت</p>
+      <div class="card-row"><span class="k">سرویس</span><span class="v">اشتراک یک ماهه فیلیمو</span></div>
+      <div class="card-row"><span class="k">شماره موبایل</span><span class="v">0912•••6789</span></div>
+      <div class="card-row total"><span class="k">مبلغ قابل پرداخت</span><span class="v">۲۳۹,۸۰۰ تومان</span></div>
+
       <div class="spacer"></div>
-      <button class="btn btn-primary" onclick="go(2)">تایید کد</button>
+      <button class="btn btn-primary" onclick="go(2)">تایید و پرداخت</button>
     </div>
   `;
 }
 
 function screen2(){
-  return `
-    <div class="topbar">
-      <div class="carrier"><span class="dot"></span> همراه اول · پلتفرم پرداخت اپراتوری</div>
-      <h2>تایید نهایی پرداخت</h2>
-      <p class="sub">لطفا اطلاعات را بررسی و تایید کنید</p>
-    </div>
-    <div class="body">
-      <div class="card-row"><span class="k">سرویس</span><span class="v">اشتراک یک ماهه فیلیمو</span></div>
-      <div class="card-row"><span class="k">شماره موبایل</span><span class="v">0912•••6789</span></div>
-      <div class="card-row total"><span class="k">مبلغ قابل پرداخت</span><span class="v">۲۳۹,۸۰۰ تومان</span></div>
-      <div class="spacer"></div>
-      <button class="btn btn-primary" onclick="go(3)">پرداخت و فعال‌سازی</button>
-    </div>
-  `;
-}
-
-function screen3(){
   if(isFail){
     return `
       <div class="topbar">
@@ -473,14 +462,14 @@ function screen3(){
   `;
 }
 
-const renderers = [screen0, screen1, screen2, screen3];
+const renderers = [screen0, screen1, screen2];
 
 function render(){
   renderStepper();
   screenEl.innerHTML = renderers[current]();
   prevBtn.disabled = current === 0;
   nextBtn.disabled = current === steps.length - 1;
-  failToggle.style.display = current === 3 ? 'none' : 'inline-block';
+  failToggle.style.display = current === 2 ? 'none' : 'inline-block';
 }
 
 function go(i){
@@ -492,7 +481,7 @@ prevBtn.addEventListener('click', ()=> go(current - 1));
 nextBtn.addEventListener('click', ()=> go(current + 1));
 failToggle.addEventListener('click', ()=>{
   isFail = true;
-  go(3);
+  go(2);
 });
 
 render();
